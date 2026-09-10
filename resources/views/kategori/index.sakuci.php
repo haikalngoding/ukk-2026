@@ -22,8 +22,12 @@
                     <td>{{ $no++ }}</td>
                     <td>{{ $kategori->keterangan }}</td>
                     <td>
-                        <a href="" class="btn btn-success btn-sm">Edit</a>
-                        <a href="" class="btn btn-danger btn-sm">Hapus</a>
+                        <a href="{{ route('admin.kategori.edit', ['id_kategori' => $kategori->id_kategori]) }}" class="btn btn-success btn-sm">Edit</a>
+                        <form action="{{ route('admin.kategori.delete', ['id_kategori' => $kategori->id_kategori]) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">Hapus</button>
+                        </form>
                     </td>
                 </tr>
             @endforeach
