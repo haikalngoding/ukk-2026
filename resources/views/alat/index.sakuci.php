@@ -14,7 +14,7 @@
     <th>Aksi</th>
 </tr>
 @php $no = 1; @endphp
-@foreach ($datal as $alats)
+@foreach ($data as $alats)
 <tr>
     <td> {{ $no++ }} </td>
     <td> {{ $alats->nama_alat }} </td>
@@ -30,5 +30,5 @@
 </tr>
 @endforeach
 </table>
-{!! $datal->links() !!}
+{!! $data->links() !!}
 @endsection
