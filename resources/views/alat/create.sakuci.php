@@ -8,9 +8,9 @@
     @csrf
     
     <label>Nama alat</label>
-    <input type="text" name="nama_alat" id="nama_kategori" class="form-control"  value="{{ old('nama_alat') }}" required>
+    <input type="text" name="nama_alat" id="nama_alat" class="form-control"  value="{{ old('nama_alat') }}" required>
     <label>Kode alat</label>
-    <input type="text" name="kode_alat" id="kode_kategori" class="form-control" value="{{ old('kode_alat') }}" required>
+    <input type="text" name="kode_alat" id="kode_alat" class="form-control" value="{{ old('kode_alat') }}" required>
 
     <button type="submit" class="btn btn-primary">Simpan</button>
 </form>

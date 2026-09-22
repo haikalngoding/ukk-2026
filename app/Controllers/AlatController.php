@@ -30,7 +30,7 @@ class AlatController extends Controller
    public function edit(Request $request, $id_alat)
 {
     $data = Alat::findOrFail($id_alat);
-    return view('alat.edit', compact('datal'));
+    return view('alat.edit', compact('data'));
 }
 
     public function update (Request $request, $id_alat)
@@ -38,12 +38,12 @@ class AlatController extends Controller
         $data = $request->all();
 
         $alat = alat::FindOrfail($id_alat);
-        $alat->update($datal);
+        $alat->update($data);
         return redirect(route('alat.index'))->with('success', 'alat berhasil diubah');
     }
    public function delete(Request $request, $id_alat)
     {
-        $alat = Kategori::findOrFail($id_alat);
+        $alat = Alat::findOrFail($id_alat);
         $alat->delete();
 
         return redirect()->route('alat.index')->with('success', 'Alat berhasil dihapus.');
