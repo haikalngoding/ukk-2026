@@ -9,6 +9,7 @@ use App\Controllers\Core\UserController;
 use App\Controllers\KategoriController;
 use App\Controllers\AlatController;
 use App\Controllers\PeminjamanController;
+use App\Controllers\PengembalianController;
 use Sakuci\Route;
 
 /*
@@ -18,9 +19,9 @@ use Sakuci\Route;
 | Daftarkan seluruh route aplikasi di sini.
 |
 | Cara menulis action:
-|   [HomeController::class, 'index']   -> disarankan
-|   'HomeController@index'             -> namespace App\Controllers otomatis
-|   function () { ... }                -> closure
+|   [HomeController::class, 'index']    -> disarankan
+|   'HomeController@index'            -> namespace App\Controllers otomatis
+|   function () { ... }               -> closure
 */
 
 Route::get('/', function () {
@@ -60,23 +61,30 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori.index');
     Route::get('/kategori/create', [KategoriController::class, 'create'])->name('kategori.create');
     Route::post('/kategori/store', [KategoriController::class, 'store'])->name('kategori.store');
-    Route::get('/kategori/{id_kategori}/edit', [kategoriController::class, 'edit'] )->name('kategori.edit');
-    Route::put('/kategori/{id_kategori}', [kategoriController::class, 'update'] )->name('kategori.update');
-    Route::delete('/kategori/{id_kategori}', [kategoriController::class, 'delete'] )->name('kategori.delete');
+    Route::get('/kategori/{id_kategori}/edit', [KategoriController::class, 'edit'])->name('kategori.edit');
+    Route::put('/kategori/{id_kategori}', [KategoriController::class, 'update'])->name('kategori.update');
+    Route::delete('/kategori/{id_kategori}', [KategoriController::class, 'delete'])->name('kategori.delete');
 
     Route::get('/alat', [AlatController::class, 'index'])->name('alat.index');
-    Route::get('/alat/create', [alatController::class, 'create'])->name('alat.create');
-    Route::post('/alat/store', [alatController::class, 'store'])->name('alat.store');
-    Route::get('/alat/{id_alat}/edit', [alatController::class, 'edit'] )->name('alat.edit');
-    Route::put('/alat/{id_alat}', [alatController::class, 'update'] )->name('alat.update');
-    Route::delete('/alat/{id_alat}', [alatController::class, 'delete'] )->name('alat.delete');
+    Route::get('/alat/create', [AlatController::class, 'create'])->name('alat.create');
+    Route::post('/alat/store', [AlatController::class, 'store'])->name('alat.store');
+    Route::get('/alat/{id_alat}/edit', [AlatController::class, 'edit'])->name('alat.edit');
+    Route::put('/alat/{id_alat}', [AlatController::class, 'update'])->name('alat.update');
+    Route::delete('/alat/{id_alat}', [AlatController::class, 'delete'])->name('alat.delete');
 
     Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman.index');
-Route::get('/peminjaman/create', [PeminjamanController::class, 'create'])->name('peminjaman.create');
-Route::post('/peminjaman', [PeminjamanController::class, 'store'])->name('peminjaman.store');
-Route::get('/peminjaman/{id_peminjaman}/edit', [PeminjamanController::class, 'edit'])->name('peminjaman.edit');
-Route::post('/peminjaman/{id_peminjaman}/update', [PeminjamanController::class, 'update'])->name('peminjaman.update');
-Route::post('/peminjaman/{id_peminjaman}/delete', [PeminjamanController::class, 'delete'])->name('peminjaman.delete');
+    Route::get('/peminjaman/create', [PeminjamanController::class, 'create'])->name('peminjaman.create');
+    Route::post('/peminjaman', [PeminjamanController::class, 'store'])->name('peminjaman.store');
+    Route::get('/peminjaman/{id}/edit', [PeminjamanController::class, 'edit'])->name('peminjaman.edit');
+    Route::post('/peminjaman/{id}/update', [PeminjamanController::class, 'update'])->name('peminjaman.update');
+    Route::post('/peminjaman/{id}/delete', [PeminjamanController::class, 'delete'])->name('peminjaman.delete');
+
+    Route::get('/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian.index');
+    Route::get('/pengembalian/create', [PengembalianController::class, 'create'])->name('pengembalian.create');
+    Route::post('/pengembalian', [PengembalianController::class, 'store'])->name('pengembalian.store');
+    Route::get('/pengembalian/{id}/edit', [PengembalianController::class, 'edit'])->name('pengembalian.edit');
+    Route::post('/pengembalian/{id}/update', [PengembalianController::class, 'update'])->name('pengembalian.update');
+    Route::post('/pengembalian/{id}/delete', [PengembalianController::class, 'delete'])->name('pengembalian.delete');
 });
 
 /*
@@ -85,31 +93,28 @@ Route::post('/peminjaman/{id_peminjaman}/delete', [PeminjamanController::class, 
 |--------------------------------------------------------------------------
 | Blok di bawah ini dikelola otomatis oleh RoleController saat admin
 | menambah, mengganti nama, atau menghapus role lewat /admin/roles.
-| Jangan diedit manual -- perubahan bisa tertimpa.
 */
 // @generated-roles:start
 
-// @role:siswa:start
-Route::group(['prefix' => 'siswa', 'middleware' => 'siswa'], function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('siswa.dashboard');
-});
-// @role:siswa:end
-// @generated-roles:end
+// @role:peminjam:start
+Route::group(['prefix' => 'peminjam', 'middleware' => 'peminjam'], function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('peminjam.dashboard');
+    
+    // Route khusus melihat katalog/daftar alat
+    Route::get('/daftar-alat', [AlatController::class, 'daftarAlatPeminjam'])->name('peminjam.alat');
 
-/*
-|--------------------------------------------------------------------------
-| Contoh (hapus/ubah sesuai kebutuhan)
-|--------------------------------------------------------------------------
-|
-| use App\Controllers\BukuController;
-|
-| Route::get('/buku', [BukuController::class, 'index'])->name('buku.index');
-|
-| // Tujuh route CRUD sekaligus: index, create, store, show, edit, update, destroy
-| // Route::resource
-|
-| // Group dengan prefix dan middleware bersama
-| Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
-|     Route::get('/dashboard', [DashboardController::class, 'index']);
-| });
-*/
+    // Rute khusus pengguna/peminjam mengajukan peminjaman alat
+    Route::get('/peminjam', [PeminjamanController::class, 'indexPeminjam'])->name('peminjam.indexPeminjam');
+    Route::get('/peminjam/ajukan', [PeminjamanController::class, 'createPeminjam'])->name('peminjam.createPeminjam');
+    Route::post('/peminjam/ajukan', [PeminjamanController::class, 'storePeminjam'])->name('peminjam.storePeminjam');
+    Route::get('/riwayat-peminjaman', [PeminjamanController::class, 'indexPeminjam'])->name('peminjam.riwayat');
+});
+// @role:peminjam:end
+
+// @role:petugas:start
+Route::group(['prefix' => 'petugas', 'middleware' => 'petugas'], function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('petugas.dashboard');
+});
+// @role:petugas:end
+
+// @generated-roles:end

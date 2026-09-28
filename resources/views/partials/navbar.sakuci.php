@@ -45,6 +45,10 @@
                     <a class="nav-link {{ is_route('peminjaman.index') ? 'active' : '' }} 
                     " href="{{ route('peminjaman.index') }}">Peminjaman</a>
                 </li>
+                 <li class="nav-item">
+                    <a class="nav-link {{ is_route('pengembalian.index') ? 'active' : '' }} 
+                    " href="{{ route('pengembalian.index') }}">Pengembalian</a>
+                </li>
                 @php
                     $currentUser = \App\Models\User::current();
                 @endphp
