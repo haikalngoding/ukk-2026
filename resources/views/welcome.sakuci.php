@@ -1,105 +1,189 @@
 @extends('layouts.app')
 
-@section('title', 'GoPENA - Sistem Peminjaman Inventaris Alat Sekolah')
+@section('title', config('app.name', 'PINVERA') . ' -- Peminjaman Alat Olahraga')
 
 @section('content')
 <style>
-    /* Styling Khusus untuk Mempercantik Tampilan GoPENA */
-    .hero-wrapper {
-        position: relative;
+    .welcome-fullscreen-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        min-height: 100vh;
+        background-color: var(--bs-body-bg);
+        z-index: 9999;
+        overflow-x: hidden;
+    }
+
+  
+    .ambient-sports-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none; 
+        z-index: 0;
         overflow: hidden;
-        border-radius: 24px;
-        background: linear-gradient(135deg, rgba(13, 110, 253, 0.05) 0%, rgba(13, 110, 253, 0.01) 100%);
-        border: 1px solid rgba(0, 0, 0, 0.05);
+        opacity: 0.12; 
     }
 
-    .badge-glow {
-        box-shadow: 0 0 15px rgba(13, 110, 253, 0.2);
-        letter-spacing: 0.5px;
+    @keyframes slowBatSwing {
+        0% { transform: rotate(0deg); }
+        30% { transform: rotate(-25deg); }
+        45% { transform: rotate(15deg); }
+        65% { transform: rotate(0deg); }
+        100% { transform: rotate(0deg); }
     }
 
-    .text-gradient {
-        background: linear-gradient(45deg, #0d6efd, #0dcaf0);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+   
+    @keyframes slowBallShoot {
+        0% { transform: translateX(0) translateY(0) scale(1); opacity: 1; }
+        30% { transform: translateX(-15px) translateY(10px) scale(0.9); opacity: 1; }
+        45% { transform: translateX(180px) translateY(-60px) scale(1.5); opacity: 0; }
+        46% { opacity: 0; }
+        100% { transform: translateX(0) translateY(0) scale(1); opacity: 1; }
     }
 
-    .feature-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: 1px solid rgba(0, 0, 0, 0.06);
+    .anim-bat-bg {
+        font-size: 10rem;
+        position: absolute;
+        right: -10%;
+        bottom: -20%;
+        transform-origin: bottom right;
+        animation: slowBatSwing 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
 
-    .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+    .anim-ball-bg {
+        font-size: 3rem;
+        position: absolute;
+        right: 40%;
+        bottom: 20%;
+        animation: slowBallShoot 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
 
-    .icon-box {
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 12px;
+   
+    .card-content-front {
+        position: relative;
+        z-index: 1;
     }
 </style>
 
-<div class="container py-4 py-lg-5">
-    {{-- Hero Section --}}
-    <section class="hero-wrapper p-4 p-md-5 mb-5">
-        <div class="row align-items-center gy-4">
-            <div class="col-lg-7 text-start">
-                <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2 mb-3 badge-glow">
-                    🚀 Powered by Sakuci v1.0.0
-                </span>
-
-                <h1 class="display-4 fw-extrabold mb-3 lh-sm">
-                    Pinjam Alat Sekolah <br class="d-none d-md-inline">
-                    Jadi Lebih <span class="text-gradient">Cepat & Cerdas</span>
-                </h1>
-
-                <p class="lead text-secondary mb-4" style="max-width: 600px;">
-                    <strong>GoPENA</strong> (Garda Peminjaman Inventaris Alat) mempermudah siswa dan guru dalam memantau, meminjam, dan mengembalikan peralatan sekolah secara *real-time*.
-                </p>
-
-                <div class="d-flex flex-wrap gap-3 align-items-center">
-                    <a class="btn btn-primary btn-lg px-4 py-2-5 shadow-sm fw-semibold" href="{{ route('login') }}">
-                        <i class="bi bi-box-arrow-in-right me-1"></i> Masuk / Login
+<div class="welcome-fullscreen-overlay">
+    
+   
+    <nav class="navbar navbar-expand-lg bg-body border-bottom sticky-top py-3 px-4 px-lg-5">
+        <div class="container-fluid px-0">
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2 text-body text-decoration-none" href="#">
+                <i class="bi bi-trophy-fill text-primary fs-4"></i>
+                <span>{{ config('app.name', 'PINVERA') }}</span>
+            </a>
+            
+            <div class="d-flex align-items-center gap-2">
+                @php 
+                    $currentUser = \App\Models\User::current(); 
+                @endphp
+                
+                @if($currentUser)
+                    <a href="{{ route('dashboard') }}" class="btn btn-primary px-4 fw-semibold rounded-pill">
+                        <i class="bi bi-speedometer2 me-1"></i> Dashboard
                     </a>
-                    <a class="btn btn-outline-secondary btn-lg px-4 py-2-5 fw-semibold" href="https://github.com/indrabsus/sakuci-framework" target="_blank">
-                        <i class="bi bi-github me-1"></i> Repositori GitHub
-                    </a>
-                </div>
-
-                <div class="mt-4 pt-2 text-muted small border-top border-light d-flex align-items-center gap-2">
-                    <i class="bi bi-file-code text-primary"></i>
-                    <span>Panduan penggunaan lengkap tersedia di file <code class="bg-light px-2 py-1 rounded text-dark">TUTORIAL.md</code></span>
-                </div>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-outline-secondary px-3 fw-semibold rounded-pill">Masuk</a>
+                    <a href="{{ route('register') }}" class="btn btn-primary px-3 fw-semibold rounded-pill">Daftar</a>
+                @endif
             </div>
+        </div>
+    </nav>
 
-            {{-- Visual / Preview Card Ilustrasi --}}
-            <div class="col-lg-5 d-none d-lg-block">
-                <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
-                    <div class="card-header bg-dark text-white p-3 d-flex align-items-center justify-content-between">
-                        <div class="d-flex gap-1">
-                            <span class="rounded-circle bg-danger d-inline-block" style="width: 10px; height: 10px;"></span>
-                            <span class="rounded-circle bg-warning d-inline-block" style="width: 10px; height: 10px;"></span>
-                            <span class="rounded-circle bg-success d-inline-block" style="width: 10px; height: 10px;"></span>
+   
+    <section class="pt-4 pb-5 px-4 px-lg-5">
+        <div class="container-fluid px-0">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6 text-start">
+                    <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-medium mb-3 border border-primary-subtle">
+                        <i class="bi bi-award me-1"></i> Sistem Peminjaman Alat Olahraga
+                    </span>
+                    
+                    <h1 class="display-10 fw-bold text-body mb-4 lh-sm">
+                        Selamat Datang Di Peminjaman Alat Olahraga Lebih <span class="text-primary">Sportif & Terstruktur</span>.
+                    </h1>
+                    
+                    <p class="text-body-secondary fs-6 mb-4 lh-base">
+                        Platform digital resmi untuk memantau inventaris fasilitas olahraga, dan perlengkapan secara mandiri, serta melacak pengembalian secara <em>real-time</em>.
+                    </p>
+
+                   
+                    <div class="d-flex align-items-center gap-3 mb-4 p-3 rounded-3 bg-body-tertiary border border-opacity-10" style="max-width: 440px;">
+                        <i class="bi bi-check2-circle text-primary fs-2"></i>
+                        <div class="small text-body-secondary">
+                            <span class="fw-semibold text-body d-block">Perlengkapan Olahraga Siap Pakai</span>
+                            <span>Aksi peminjaman alat olahraga terpantau akurat.</span>
                         </div>
-                        <small class="text-muted font-monospace">gopena-system.local</small>
                     </div>
-                    <div class="card-body p-4 text-center">
-                        <div class="my-3">
-                            <div class="display-1 text-primary"><i class="bi bi-tools"></i></div>
-                            <h5 class="fw-bold mt-2">Status Inventaris Realtime</h5>
-                            <p class="text-muted small">Cek ketersediaan proyektor, kabel, alat lab, dan barang praktikum dalam satu klik.</p>
+                    
+                    <div class="d-flex flex-wrap gap-3">
+                        @if($currentUser)
+                            <a href="{{ route('dashboard') }}" class="btn btn-primary btn-lg px-5 fw-semibold rounded-pill shadow-sm">
+                                Buka Dashboard <i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-4 fw-semibold rounded-pill shadow-sm">
+                                Mulai Sekarang <i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                            <a href="#panduan" class="btn btn-outline-secondary btn-lg px-4 fw-semibold rounded-pill">
+                                Cara Penggunaan
+                            </a>
+                        @endif
+                    </div>
+                </div>
+                
+                <div class="col-lg-6">
+                    
+                    <div class="card border-0 shadow-sm rounded-4 bg-body-tertiary p-4 border border-opacity-10 w-100 position-relative overflow-hidden">
+                        
+                       
+                        <div class="ambient-sports-bg">
+                            <div class="anim-ball-bg">⚾</div>
+                            <div class="anim-bat-bg">🏏</div>
                         </div>
-                        <div class="p-3 bg-light rounded-3 text-start d-flex justify-content-between align-items-center">
-                            <div>
-                                <small class="d-block text-muted">Barang Terpinjam Hari Ini</small>
-                                <span class="fw-bold text-dark">24 Unit Alat Praktikum</span>
+
+                       
+                        <div class="card-content-front">
+                            <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom border-opacity-10">
+                                <h5 class="fw-bold mb-0 text-body fs-6">Status Inventaris Olahraga</h5>
+                                <span class="badge bg-success-subtle text-success px-2.5 py-1 rounded-pill small">
+                                    <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i> Ready to Play
+                                </span>
                             </div>
-                            <span class="badge bg-success">Aktif</span>
+                            
+                            <div class="d-flex flex-column gap-3">
+                                <div class="p-3 rounded-3 bg-body border border-opacity-10 d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="bg-primary-subtle text-primary rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            <i class="bi bi-people-fill fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <span class="text-body-secondary d-block small">Hak Akses</span>
+                                            <span class="fw-semibold text-body fs-7">Admin, Petugas, & Siswa/Peminjam</span>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-primary text-white">3 Role</span>
+                                </div>
+
+                                <div class="p-3 rounded-3 bg-body border border-opacity-10 d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="bg-success-subtle text-success rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                            <i class="bi bi-shield-check fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <span class="text-body-secondary d-block small">Keamanan Sistem</span>
+                                            <span class="fw-semibold text-body fs-7">Log Aktifitas & Riwayat Transaksi</span>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-success text-white">Aktif</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -107,87 +191,65 @@
         </div>
     </section>
 
-    {{-- Highlight Fitur Unggulan --}}
-    <section class="py-3">
-        <div class="text-center mb-4">
-            <h3 class="fw-bold">Mengapa Menggunakan GoPENA?</h3>
-            <p class="text-secondary">Kemudahan pengelolaan sarana dan prasarana dalam satu tempat.</p>
+   
+    <section id="panduan" class="py-5 bg-body-tertiary border-top border-opacity-10 px-4 px-lg-5">
+        <div class="container-fluid px-0 py-4">
+            <div class="text-center mb-5">
+                <span class="text-primary fw-semibold small text-uppercase tracking-wider">Panduan Sistem</span>
+                <h2 class="fw-bold text-body mt-1">Cara Penggunaan Aplikasi</h2>
+                <p class="text-body-secondary" style="max-width: 600px; margin: 0 auto;">
+                    Ikuti langkah mudah di bawah ini untuk mulai meminjam perlengkapan olahraga.
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 bg-body p-4 h-100 border border-opacity-10">
+                        <div class="bg-primary text-white rounded-3 p-3 d-inline-flex align-items-center justify-content-center mb-3 shadow-xs" style="width: 44px; height: 44px;">
+                            <span class="fw-bold fs-5">1</span>
+                        </div>
+                        <h4 class="fw-bold fs-5 text-body mb-2">Login / Registrasi Akun</h4>
+                        <p class="text-body-secondary small mb-0 lh-base">
+                            Masuk ke aplikasi atau daftar akun baru sebagai siswa/peminjam. Admin dan petugas juga dapat login melalui akun khusus mereka.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 bg-body p-4 h-100 border border-opacity-10">
+                        <div class="bg-primary text-white rounded-3 p-3 d-inline-flex align-items-center justify-content-center mb-3 shadow-xs" style="width: 44px; height: 44px;">
+                            <span class="fw-bold fs-5">2</span>
+                        </div>
+                        <h4 class="fw-bold fs-5 text-body mb-2">Ajukan Pinjam Alat</h4>
+                        <p class="text-body-secondary small mb-0 lh-base">
+                            Pilih perlengkapan olahraga yang ingin dipinjam (seperti bola kasti atau tongkat) dan ajukan permohonan untuk diverifikasi petugas.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 bg-body p-4 h-100 border border-opacity-10">
+                        <div class="bg-primary text-white rounded-3 p-3 d-inline-flex align-items-center justify-content-center mb-3 shadow-xs" style="width: 44px; height: 44px;">
+                            <span class="fw-bold fs-5">3</span>
+                        </div>
+                        <h4 class="fw-bold fs-5 text-body mb-2">Pengembalian & Log</h4>
+                        <p class="text-body-secondary small mb-0 lh-base">
+                            Setelah selesai berolahraga, kembalikan alat tepat waktu. Semua aktivitas peminjaman dan pengembalian akan otomatis tercatat di Log Aktifitas.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
+    </section>
 
-        <style>
-    /* Menghilangkan underline bawaan link dan memastikan cursor menjadi pointer */
-    .feature-card-link {
-        text-decoration: none;
-        color: inherit;
-        display: block;
-    }
+    <!-- Footer -->
+    <footer class="py-4 bg-body border-top border-opacity-10 text-center px-4 px-lg-5">
+        <div class="container-fluid px-0">
+            <p class="text-body-secondary small mb-0">
+                &copy; {{ date('Y') }} <strong>PINVERA</strong>. Sistem Peminjaman Alat Olahraga Berbasis Sakuci Framework.
+            </p>
+        </div>
+    </footer>
 
-    .feature-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-        border: 1px solid rgba(0, 0, 0, 0.06);
-    }
-
-    /* Efek hover saat card disentuh/diklik */
-    .feature-card-link:hover .feature-card {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
-        border-color: rgba(13, 110, 253, 0.2);
-    }
-
-    .icon-box {
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 12px;
-    }
-</style>
-
-<div class="row g-4">
-    {{-- Card 1: Kelola Kategori --}}
-    <div class="col-md-4">
-        <a href="{{ route('kategori.index') }}" class="feature-card-link">
-            <div class="card h-100 p-3 feature-card rounded-4 bg-white">
-                <div class="card-body">
-                    <div class="icon-box bg-primary bg-opacity-10 text-primary mb-3">
-                        <i class="bi bi-tags-fill fs-4"></i>
-                    </div>
-                    <h5 class="fw-bold text-dark">Manajemen Kategori</h5>
-                    <p class="text-secondary small mb-0">Kelola kelompok dan klasifikasi jenis alat praktikum atau fasilitas sekolah secara terstruktur.</p>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    {{-- Card 2: Kelola Alat --}}
-    <div class="col-md-4">
-        <a href="{{ route('alat.index') }}" class="feature-card-link">
-            <div class="card h-100 p-3 feature-card rounded-4 bg-white">
-                <div class="card-body">
-                    <div class="icon-box bg-success bg-opacity-10 text-success mb-3">
-                        <i class="bi bi-tools fs-4"></i>
-                    </div>
-                    <h5 class="fw-bold text-dark">Manajemen Alat</h5>
-                    <p class="text-secondary small mb-0">Pendataan inventaris barang, stok alat yang tersedia, serta pemantauan kondisi alat (baik/rusak).</p>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    {{-- Card 3: Kelola Peminjaman --}}
-    <div class="col-md-4">
-        <a href="{{ route('peminjaman.index') }}" class="feature-card-link">
-            <div class="card h-100 p-3 feature-card rounded-4 bg-white">
-                <div class="card-body">
-                    <div class="icon-box bg-warning bg-opacity-10 text-warning mb-3">
-                        <i class="bi bi-arrow-left-right fs-4"></i>
-                    </div>
-                    <h5 class="fw-bold text-dark">Manajemen Peminjaman</h5>
-                    <p class="text-secondary small mb-0">Pencatatan pengajuan pinjam, status persetujuan, jadwal pengembalian, dan riwayat peminjaman.</p>
-                </div>
-            </div>
-        </a>
-    </div>
 </div>
 @endsection

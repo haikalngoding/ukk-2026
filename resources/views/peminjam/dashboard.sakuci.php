@@ -1,4 +1,4 @@
-@extends('layouts.app')
+v@extends('layouts.app')
 
 @section('title', config('app.name') . ' -- Dashboard')
 

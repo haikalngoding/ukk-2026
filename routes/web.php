@@ -10,32 +10,14 @@ use App\Controllers\KategoriController;
 use App\Controllers\AlatController;
 use App\Controllers\PeminjamanController;
 use App\Controllers\PengembalianController;
+use App\Controllers\LogAktifitasController;
 use Sakuci\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Route Web
-|--------------------------------------------------------------------------
-| Daftarkan seluruh route aplikasi di sini.
-|
-| Cara menulis action:
-|   [HomeController::class, 'index']    -> disarankan
-|   'HomeController@index'            -> namespace App\Controllers otomatis
-|   function () { ... }               -> closure
-*/
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
 Route::get('/docs', [DocsController::class, 'index'])->name('docs');
-
-/*
-|--------------------------------------------------------------------------
-| Login multi-role
-|--------------------------------------------------------------------------
-| Lihat /docs untuk penjelasan lengkap langkah demi langkah.
-*/
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'login'])->name('login.attempt')->middleware('guest');
@@ -85,15 +67,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function () {
     Route::get('/pengembalian/{id}/edit', [PengembalianController::class, 'edit'])->name('pengembalian.edit');
     Route::post('/pengembalian/{id}/update', [PengembalianController::class, 'update'])->name('pengembalian.update');
     Route::post('/pengembalian/{id}/delete', [PengembalianController::class, 'delete'])->name('pengembalian.delete');
+
+    // ROUTE BARU: Log Aktifitas Admin
+    Route::get('/log-aktifitas', [LogAktifitasController::class, 'index'])->name('admin.log.index');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Route role dinamis
-|--------------------------------------------------------------------------
-| Blok di bawah ini dikelola otomatis oleh RoleController saat admin
-| menambah, mengganti nama, atau menghapus role lewat /admin/roles.
-*/
 // @generated-roles:start
 
 // @role:peminjam:start
@@ -108,12 +86,20 @@ Route::group(['prefix' => 'peminjam', 'middleware' => 'peminjam'], function () {
     Route::get('/peminjam/ajukan', [PeminjamanController::class, 'createPeminjam'])->name('peminjam.createPeminjam');
     Route::post('/peminjam/ajukan', [PeminjamanController::class, 'storePeminjam'])->name('peminjam.storePeminjam');
     Route::get('/riwayat-peminjaman', [PeminjamanController::class, 'indexPeminjam'])->name('peminjam.riwayat');
+
+    // ROUTE BARU: Pengembalian Alat oleh Peminjam
+    Route::get('/pengembalian/ajukan', [PengembalianController::class, 'createPeminjam'])->name('peminjam.pengembalian.create');
+    Route::post('/pengembalian/store', [PengembalianController::class, 'storePeminjam'])->name('peminjam.pengembalian.store');
 });
 // @role:peminjam:end
 
 // @role:petugas:start
 Route::group(['prefix' => 'petugas', 'middleware' => 'petugas'], function () {
     Route::get('/', [DashboardController::class, 'index'])->name('petugas.dashboard');
+    
+    // Rute Petugas untuk Peminjaman & Persetujuan
+    Route::get('/peminjaman', [PeminjamanController::class, 'indexPetugas'])->name('petugas.peminjaman.index');
+    Route::post('/peminjaman/{id}/setujui', [PeminjamanController::class, 'setujuiPetugas'])->name('petugas.peminjaman.setujui');
 });
 // @role:petugas:end
 

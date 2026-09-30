@@ -4,7 +4,7 @@
 <div class="container">
     <h2>Edit Data Peminjaman</h2>
     
-    <form action="{{ route('peminjaman.update', $data->id_peminjaman) }}" method="POST">
+    <form action="{{ route('peminjaman.update', ['id_peminjaman' => $data->id_peminjaman]) }}" method="POST">
         @csrf
         
         <div class="mb-3">
@@ -12,7 +12,7 @@
             <select name="id_user" id="id_user" class="form-control" required>
                 @foreach($users as $user)
                     <option value="{{ $user->id }}" {{ $data->id_user == $user->id ? 'selected' : '' }}>
-                        {{ $user->nama }}
+                        {{ $user->nama ?? $user->name ?? $user->username ?? 'User ID: ' . $user->id }}
                     </option>
                 @endforeach
             </select>
@@ -23,7 +23,7 @@
             <select name="id_alat" id="id_alat" class="form-control" required>
                 @foreach($alat as $item)
                     <option value="{{ $item->id }}" {{ $data->id_alat == $item->id ? 'selected' : '' }}>
-                        {{ $item->nama_alat }}
+                        {{ $item->nama_alat ?? $item->nama ?? 'Alat ID: ' . $item->id }}
                     </option>
                 @endforeach
             </select>
@@ -50,6 +50,7 @@
                 <option value="Pending" {{ $data->status == 'Pending' ? 'selected' : '' }}>Pending</option>
                 <option value="Disetujui" {{ $data->status == 'Disetujui' ? 'selected' : '' }}>Disetujui</option>
                 <option value="Ditolak" {{ $data->status == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                <option value="Dipinjam" {{ $data->status == 'Dipinjam' ? 'selected' : '' }}>Dipinjam</option>
                 <option value="Dikembalikan" {{ $data->status == 'Dikembalikan' ? 'selected' : '' }}>Dikembalikan</option>
             </select>
         </div>

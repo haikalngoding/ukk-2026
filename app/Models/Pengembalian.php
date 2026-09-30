@@ -16,7 +16,6 @@ class Pengembalian extends Model
         'terlambat_hari',
         'denda',
         'kondisi_barang',
-        'catatan',
-        'id_alat'
+        'catatan'
     ];
 }

@@ -11,7 +11,7 @@ class Alat extends Model
 
     protected array $fillable = [
         'nama_alat',
-        'id_kategori',
-        'kode_alat'
+        'kode_alat',
+        'id_kategori'
     ];
 }

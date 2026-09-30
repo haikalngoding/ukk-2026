@@ -36,10 +36,15 @@
                     <tbody>
                         @php $no = 1; @endphp
                         @forelse ($datap as $peminjaman)
+                        @php
+                            // Ambil nama alat dengan aman (melalui relasi atau cari manual berdasarkan id_alat)
+                            $alatObj = $peminjaman->alat ?? \App\Models\Alat::find($peminjaman->id_alat ?? null);
+                            $namaAlatFinal = $alatObj->nama_alat ?? $alatObj->nama ?? $alatObj->name ?? ('Alat #' . ($peminjaman->id_alat ?? ''));
+                        @endphp
                         <tr>
                             <td class="px-4 text-center text-body-secondary fw-medium fs-7">{{ $no++ }}</td>
                             <td class="px-3">
-                                <div class="fw-semibold text-body fs-7">{{ $peminjaman->alat->nama_alat ?? $peminjaman->alat->nama ?? 'Alat ID: ' . $peminjaman->id_alat }}</div>
+                                <div class="fw-semibold text-body fs-7"> {{ $namaAlatFinal }}</div>
                             </td>
                             <td class="px-3">
                                 <span class="badge bg-body-tertiary text-body border font-monospace fw-semibold px-2.5 py-1.5 rounded-2 fs-8">
