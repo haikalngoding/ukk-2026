@@ -26,7 +26,7 @@
 
                         <div class="mb-3">
                             <label for="kode_alat" class="form-label fw-semibold">Kode Alat</label>
-                            <input type="text" name="kode_alat" id="kode_alat" class="form-control" value="{{ old('kode_alat') }}" placeholder="Contoh: ALT-01" required>
+                            <input type="text" name="kode_alat" id="kode_alat" class="form-control" value="{{ old('kode_alat') }}" placeholder="Contoh: alat ngoding" required>
                         </div>
 
                         <div class="mb-4">

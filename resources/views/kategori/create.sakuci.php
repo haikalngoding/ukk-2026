@@ -26,7 +26,7 @@
 
                         <div class="mb-3">
                             <label for="kode_kategori" class="form-label fw-semibold">Kode Kategori</label>
-                            <input type="text" name="kode_kategori" id="kode_kategori" class="form-control" value="{{ old('kode_kategori') }}" placeholder="Contoh: KAT-001..." required>
+                            <input type="text" name="kode_kategori" id="kode_kategori" class="form-control" value="{{ old('kode_kategori') }}" placeholder="Contoh: kategori ngoding" required>
                         </div>
 
                         <div class="mb-4">
