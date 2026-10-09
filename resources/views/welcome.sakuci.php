@@ -1,189 +1,240 @@
 @extends('layouts.app')
 
-@section('title', config('app.name', 'PINVERA') . ' -- Peminjaman Alat Olahraga')
+@section('title', config('app.name', 'PINVERA') . ' — Peminjaman Alat Olahraga Modern')
 
 @section('content')
 <style>
+    /* Dynamic Theme Styles */
     .welcome-fullscreen-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100vw;
+        position: relative;
         min-height: 100vh;
-        background-color: var(--bs-body-bg);
-        z-index: 9999;
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        transition: background-color 0.3s ease, color 0.3s ease;
         overflow-x: hidden;
     }
 
-  
+    .hero-bg-gradient {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 10% 20%, rgba(13, 110, 253, 0.08) 0%, transparent 50%);
+        pointer-events: none;
+    }
+
     .ambient-sports-bg {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        pointer-events: none; 
+        pointer-events: none;
         z-index: 0;
         overflow: hidden;
-        opacity: 0.12; 
+        opacity: 0.1;
     }
 
-    @keyframes slowBatSwing {
-        0% { transform: rotate(0deg); }
-        30% { transform: rotate(-25deg); }
-        45% { transform: rotate(15deg); }
-        65% { transform: rotate(0deg); }
-        100% { transform: rotate(0deg); }
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(10deg); }
     }
 
-   
-    @keyframes slowBallShoot {
-        0% { transform: translateX(0) translateY(0) scale(1); opacity: 1; }
-        30% { transform: translateX(-15px) translateY(10px) scale(0.9); opacity: 1; }
-        45% { transform: translateX(180px) translateY(-60px) scale(1.5); opacity: 0; }
-        46% { opacity: 0; }
-        100% { transform: translateX(0) translateY(0) scale(1); opacity: 1; }
-    }
-
-    .anim-bat-bg {
-        font-size: 10rem;
+    .anim-float-1 {
+        font-size: 8rem;
         position: absolute;
-        right: -10%;
-        bottom: -20%;
-        transform-origin: bottom right;
-        animation: slowBatSwing 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        right: 5%;
+        top: 10%;
+        animation: floatSlow 7s ease-in-out infinite;
     }
 
-    .anim-ball-bg {
-        font-size: 3rem;
+    .anim-float-2 {
+        font-size: 6rem;
         position: absolute;
-        right: 40%;
-        bottom: 20%;
-        animation: slowBallShoot 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        left: 2%;
+        bottom: 15%;
+        animation: floatSlow 9s ease-in-out infinite 1s;
     }
 
-   
-    .card-content-front {
-        position: relative;
-        z-index: 1;
+    /* Glassmorphism Responsive to Themes */
+    .glass-card {
+        background: rgba(var(--bs-body-bg-rgb), 0.75);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid var(--bs-border-color-translucent);
+    }
+
+    .hover-lift {
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .step-number {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.2rem;
     }
 </style>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
 <div class="welcome-fullscreen-overlay">
-    
-   
-    <nav class="navbar navbar-expand-lg bg-body border-bottom sticky-top py-3 px-4 px-lg-5">
+    <div class="hero-bg-gradient"></div>
+
+    {{-- Navigation Bar --}}
+    <nav class="navbar navbar-expand-lg glass-card sticky-top py-3 px-4 px-lg-5 shadow-sm">
         <div class="container-fluid px-0">
             <a class="navbar-brand fw-bold d-flex align-items-center gap-2 text-body text-decoration-none" href="#">
-                <i class="bi bi-trophy-fill text-primary fs-4"></i>
-                <span>{{ config('app.name', 'PINVERA') }}</span>
+                <div class="bg-primary text-white rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                    <i class="bi bi-trophy-fill fs-5"></i>
+                </div>
+                <span class="fs-4">{{ config('app.name', 'PINVERA') }}</span>
             </a>
             
-            <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center gap-3">
+                {{-- Theme Switcher Button --}}
+                <button class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center p-2" id="btnThemeToggle" type="button" style="width: 38px; height: 38px;" title="Ganti Mode Tema">
+                    <i class="bi bi-sun-fill" id="themeIcon"></i>
+                </button>
+
                 @php 
-                    $currentUser = \App\Models\User::current(); 
+                    $currentUser = class_exists('\App\Models\User') && method_exists('\App\Models\User', 'current') 
+                        ? \App\Models\User::current() 
+                        : auth()->user(); 
                 @endphp
                 
                 @if($currentUser)
-                    <a href="{{ route('dashboard') }}" class="btn btn-primary px-4 fw-semibold rounded-pill">
+                    <a href="{{ route('dashboard') }}" class="btn btn-primary px-4 py-2 fw-semibold rounded-pill shadow-sm">
                         <i class="bi bi-speedometer2 me-1"></i> Dashboard
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="btn btn-outline-secondary px-3 fw-semibold rounded-pill">Masuk</a>
-                    <a href="{{ route('register') }}" class="btn btn-primary px-3 fw-semibold rounded-pill">Daftar</a>
+                    <a href="{{ route('login') }}" class="btn btn-link text-decoration-none text-body fw-semibold px-3">Masuk</a>
+                    <a href="{{ route('register') }}" class="btn btn-primary px-4 py-2 fw-semibold rounded-pill shadow-sm">Daftar Akun</a>
                 @endif
             </div>
         </div>
     </nav>
 
-   
-    <section class="pt-4 pb-5 px-4 px-lg-5">
+    {{-- Hero Section --}}
+    <section class="pt-5 pb-5 px-4 px-lg-5 position-relative">
+        <div class="ambient-sports-bg">
+            <div class="anim-float-1">🏀</div>
+            <div class="anim-float-2">⚽</div>
+        </div>
+
         <div class="container-fluid px-0">
-            <div class="row align-items-center g-5">
-                <div class="col-lg-6 text-start">
-                    <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-medium mb-3 border border-primary-subtle">
-                        <i class="bi bi-award me-1"></i> Sistem Peminjaman Alat Olahraga
+            <div class="row align-items-center g-5 py-lg-4">
+                <div class="col-lg-6 text-start position-relative z-1">
+                    <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-semibold mb-3 border border-primary-subtle d-inline-flex align-items-center gap-2">
+                        <i class="bi bi-lightning-charge-fill"></i> Sistem Olahraga Mandiri & Terintegrasi
                     </span>
                     
-                    <h1 class="display-10 fw-bold text-body mb-4 lh-sm">
-                        Selamat Datang Di Peminjaman Alat Olahraga Lebih <span class="text-primary">Sportif & Terstruktur</span>.
+                    <h1 class="display-4 fw-bold text-body mb-4 lh-sm">
+                        Pinjam Peralatan Olahraga Jadi <span class="text-primary">Cepat, Praktis & Transparan</span>.
                     </h1>
                     
-                    <p class="text-body-secondary fs-6 mb-4 lh-base">
-                        Platform digital resmi untuk memantau inventaris fasilitas olahraga, dan perlengkapan secara mandiri, serta melacak pengembalian secara <em>real-time</em>.
+                    <p class="text-body-secondary fs-5 mb-4 lh-base" style="max-width: 540px;">
+                        Pantau ketersediaan inventaris raket, bola, hingga perlengkapan lapangan secara <em>real-time</em>.
                     </p>
 
-                   
-                    <div class="d-flex align-items-center gap-3 mb-4 p-3 rounded-3 bg-body-tertiary border border-opacity-10" style="max-width: 440px;">
-                        <i class="bi bi-check2-circle text-primary fs-2"></i>
-                        <div class="small text-body-secondary">
-                            <span class="fw-semibold text-body d-block">Perlengkapan Olahraga Siap Pakai</span>
-                            <span>Aksi peminjaman alat olahraga terpantau akurat.</span>
-                        </div>
-                    </div>
-                    
-                    <div class="d-flex flex-wrap gap-3">
+                    <div class="d-flex flex-wrap gap-3 mb-5">
                         @if($currentUser)
-                            <a href="{{ route('dashboard') }}" class="btn btn-primary btn-lg px-5 fw-semibold rounded-pill shadow-sm">
+                            <a href="{{ route('dashboard') }}" class="btn btn-primary btn-lg px-4 py-3 fw-semibold rounded-pill shadow">
                                 Buka Dashboard <i class="bi bi-arrow-right ms-2"></i>
                             </a>
                         @else
-                            <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-4 fw-semibold rounded-pill shadow-sm">
-                                Mulai Sekarang <i class="bi bi-arrow-right ms-2"></i>
+                            <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-4 py-3 fw-semibold rounded-pill shadow">
+                                Mulai Pinjam Sekarang <i class="bi bi-arrow-right ms-2"></i>
                             </a>
-                            <a href="#panduan" class="btn btn-outline-secondary btn-lg px-4 fw-semibold rounded-pill">
-                                Cara Penggunaan
+                            <a href="#panduan" class="btn btn-outline-secondary btn-lg px-4 py-3 fw-semibold rounded-pill">
+                                Lihat Panduan
                             </a>
                         @endif
                     </div>
+
+                    <div class="row g-3 pt-3 border-top border-translucent">
+                        <div class="col-4">
+                            <h3 class="fw-bold mb-0 text-body">100%</h3>
+                            <small class="text-body-secondary">Terorganisir</small>
+                        </div>
+                        <div class="col-4">
+                            <h3 class="fw-bold mb-0 text-body">Real-Time</h3>
+                            <small class="text-body-secondary">Lacak Status</small>
+                        </div>
+                        <div class="col-4">
+                            <h3 class="fw-bold mb-0 text-body">3 Role</h3>
+                            <small class="text-body-secondary">Akses Terkontrol</small>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="col-lg-6">
-                    
-                    <div class="card border-0 shadow-sm rounded-4 bg-body-tertiary p-4 border border-opacity-10 w-100 position-relative overflow-hidden">
+                {{-- Hero Visual Card --}}
+                <div class="col-lg-6 position-relative z-1">
+                    <div class="card border-0 shadow-lg rounded-5 glass-card p-4 p-md-5 position-relative overflow-hidden">
+                        <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom border-translucent">
+                            <div>
+                                <h5 class="fw-bold mb-1 text-body">Katalog Peralatan Favorit</h5>
+                                <p class="text-body-secondary small mb-0">Status ketersediaan inventaris terkini</p>
+                            </div>
+                            <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill small fw-semibold">
+                                Update Otomatis
+                            </span>
+                        </div>
                         
-                       
-                        <div class="ambient-sports-bg">
-                            <div class="anim-ball-bg">⚾</div>
-                            <div class="anim-bat-bg">🏏</div>
+                        <div class="d-flex flex-column gap-3" id="katalog-list">
+                            <div class="p-3 rounded-4 bg-body-tertiary hover-lift border border-translucent d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="bg-warning-subtle rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; font-size: 1.4rem;">
+                                        🏸
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-semibold text-body mb-0">Set Raket Badminton</h6>
+                                        <small class="text-body-secondary">Yonex Carbonex • 12 Set Tersedia</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-success text-white px-3 py-2 rounded-pill">Ready</span>
+                            </div>
+
+                            <div class="p-3 rounded-4 bg-body-tertiary hover-lift border border-translucent d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="bg-danger-subtle rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; font-size: 1.4rem;">
+                                        ⚽
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-semibold text-body mb-0">Bola Futsal Specs</h6>
+                                        <small class="text-body-secondary">Size 4 • 5 Bola Tersedia</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-success text-white px-3 py-2 rounded-pill">Ready</span>
+                            </div>
+
+                            <div class="p-3 rounded-4 bg-body-tertiary hover-lift border border-translucent d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="bg-primary-subtle rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; font-size: 1.4rem;">
+                                        ⚾
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-semibold text-body mb-0">Perlengkapan Kasti</h6>
+                                        <small class="text-body-secondary">Kayu Pemukul & Bola • 3 Set</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-success text-white px-3 py-2 rounded-pill">Ready</span>
+                            </div>
                         </div>
 
-                       
-                        <div class="card-content-front">
-                            <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom border-opacity-10">
-                                <h5 class="fw-bold mb-0 text-body fs-6">Status Inventaris Olahraga</h5>
-                                <span class="badge bg-success-subtle text-success px-2.5 py-1 rounded-pill small">
-                                    <i class="bi bi-circle-fill me-1" style="font-size: 6px;"></i> Ready to Play
-                                </span>
-                            </div>
-                            
-                            <div class="d-flex flex-column gap-3">
-                                <div class="p-3 rounded-3 bg-body border border-opacity-10 d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-primary-subtle text-primary rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                            <i class="bi bi-people-fill fs-5"></i>
-                                        </div>
-                                        <div>
-                                            <span class="text-body-secondary d-block small">Hak Akses</span>
-                                            <span class="fw-semibold text-body fs-7">Admin, Petugas, & Siswa/Peminjam</span>
-                                        </div>
-                                    </div>
-                                    <span class="badge bg-primary text-white">3 Role</span>
-                                </div>
-
-                                <div class="p-3 rounded-3 bg-body border border-opacity-10 d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-success-subtle text-success rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                            <i class="bi bi-shield-check fs-5"></i>
-                                        </div>
-                                        <div>
-                                            <span class="text-body-secondary d-block small">Keamanan Sistem</span>
-                                            <span class="fw-semibold text-body fs-7">Log Aktifitas & Riwayat Transaksi</span>
-                                        </div>
-                                    </div>
-                                    <span class="badge bg-success text-white">Aktif</span>
-                                </div>
-                            </div>
+                        <div class="mt-4 pt-3 text-center border-top border-translucent">
+                            <small class="text-body-secondary d-flex align-items-center justify-content-center gap-1">
+                                <i class="bi bi-shield-check text-primary"></i> Seluruh peminjaman dicatat resmi pada Log Aktivitas Sistem
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -191,50 +242,50 @@
         </div>
     </section>
 
-   
-    <section id="panduan" class="py-5 bg-body-tertiary border-top border-opacity-10 px-4 px-lg-5">
+    {{-- How It Works Section --}}
+    <section id="panduan" class="py-5 bg-body-tertiary border-top border-translucent px-4 px-lg-5">
         <div class="container-fluid px-0 py-4">
             <div class="text-center mb-5">
-                <span class="text-primary fw-semibold small text-uppercase tracking-wider">Panduan Sistem</span>
-                <h2 class="fw-bold text-body mt-1">Cara Penggunaan Aplikasi</h2>
-                <p class="text-body-secondary" style="max-width: 600px; margin: 0 auto;">
-                    Ikuti langkah mudah di bawah ini untuk mulai meminjam perlengkapan olahraga.
+                <span class="text-primary fw-bold text-uppercase tracking-wider small">Alur Peminjaman</span>
+                <h2 class="fw-bold text-body mt-1">3 Langkah Mudah Berolahraga</h2>
+                <p class="text-body-secondary" style="max-width: 580px; margin: 0 auto;">
+                    Sistem dirancang intuitif agar siswa, petugas, dan admin dapat mengelola transaksi barang tanpa hambatan.
                 </p>
             </div>
 
             <div class="row g-4">
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm rounded-4 bg-body p-4 h-100 border border-opacity-10">
-                        <div class="bg-primary text-white rounded-3 p-3 d-inline-flex align-items-center justify-content-center mb-3 shadow-xs" style="width: 44px; height: 44px;">
-                            <span class="fw-bold fs-5">1</span>
+                    <div class="card border-0 shadow-sm rounded-4 bg-body p-4 h-100 hover-lift border border-translucent">
+                        <div class="step-number bg-primary-subtle text-primary mb-4">
+                            01
                         </div>
-                        <h4 class="fw-bold fs-5 text-body mb-2">Login / Registrasi Akun</h4>
+                        <h4 class="fw-bold fs-5 text-body mb-2">Masuk ke Akun</h4>
                         <p class="text-body-secondary small mb-0 lh-base">
-                            Masuk ke aplikasi atau daftar akun baru sebagai siswa/peminjam. Admin dan petugas juga dapat login melalui akun khusus mereka.
+                            Lakukan login sebagai siswa/peminjam. Petugas dan Admin dapat menggunakan hak akses khusus untuk verifikasi inventaris.
                         </p>
                     </div>
                 </div>
 
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm rounded-4 bg-body p-4 h-100 border border-opacity-10">
-                        <div class="bg-primary text-white rounded-3 p-3 d-inline-flex align-items-center justify-content-center mb-3 shadow-xs" style="width: 44px; height: 44px;">
-                            <span class="fw-bold fs-5">2</span>
+                    <div class="card border-0 shadow-sm rounded-4 bg-body p-4 h-100 hover-lift border border-translucent">
+                        <div class="step-number bg-primary text-white mb-4 shadow-sm">
+                            02
                         </div>
-                        <h4 class="fw-bold fs-5 text-body mb-2">Ajukan Pinjam Alat</h4>
+                        <h4 class="fw-bold fs-5 text-body mb-2">Pilih & Ajukan Alat</h4>
                         <p class="text-body-secondary small mb-0 lh-base">
-                            Pilih perlengkapan olahraga yang ingin dipinjam (seperti bola kasti atau tongkat) dan ajukan permohonan untuk diverifikasi petugas.
+                            Cari alat olahraga yang ingin kamu gunakan, tentukan durasi peminjaman, dan kirimkan pengajuan langsung lewat sistem.
                         </p>
                     </div>
                 </div>
 
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm rounded-4 bg-body p-4 h-100 border border-opacity-10">
-                        <div class="bg-primary text-white rounded-3 p-3 d-inline-flex align-items-center justify-content-center mb-3 shadow-xs" style="width: 44px; height: 44px;">
-                            <span class="fw-bold fs-5">3</span>
+                    <div class="card border-0 shadow-sm rounded-4 bg-body p-4 h-100 hover-lift border border-translucent">
+                        <div class="step-number bg-primary-subtle text-primary mb-4">
+                            03
                         </div>
-                        <h4 class="fw-bold fs-5 text-body mb-2">Pengembalian & Log</h4>
+                        <h4 class="fw-bold fs-5 text-body mb-2">Gunakan & Kembalikan</h4>
                         <p class="text-body-secondary small mb-0 lh-base">
-                            Setelah selesai berolahraga, kembalikan alat tepat waktu. Semua aktivitas peminjaman dan pengembalian akan otomatis tercatat di Log Aktifitas.
+                            Ambil alat di ruang inventaris. Setelah selesai, kembalikan tepat waktu untuk memperbarui Log Riwayat secara otomatis.
                         </p>
                     </div>
                 </div>
@@ -242,14 +293,54 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-4 bg-body border-top border-opacity-10 text-center px-4 px-lg-5">
-        <div class="container-fluid px-0">
+    {{-- Footer --}}
+    <footer class="py-4 bg-body border-top border-translucent text-center px-4 px-lg-5">
+        <div class="container-fluid px-0 d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
             <p class="text-body-secondary small mb-0">
-                &copy; {{ date('Y') }} <strong>PINVERA</strong>. Sistem Peminjaman Alat Olahraga Berbasis Sakuci Framework.
+                &copy; {{ date('Y') }} <strong>{{ config('app.name', 'PINVERA') }}</strong>. Developed with Sakuci Framework.
             </p>
         </div>
     </footer>
 
 </div>
+
+{{-- Script Toggle Theme --}}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeToggleBtn = document.getElementById('btnThemeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        
+        // Ambil preferensi dari localStorage atau preferensi OS
+        const getPreferredTheme = () => {
+            const storedTheme = localStorage.getItem('theme');
+            if (storedTheme) {
+                return storedTheme;
+            }
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        };
+
+        const setTheme = (theme) => {
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            localStorage.setItem('theme', theme);
+            
+            if (theme === 'dark') {
+                themeIcon.classList.remove('bi-sun-fill');
+                themeIcon.classList.add('bi-moon-stars-fill');
+            } else {
+                themeIcon.classList.remove('bi-moon-stars-fill');
+                themeIcon.classList.add('bi-sun-fill');
+            }
+        };
+
+        // Inisialisasi tema saat pertama kali muat
+        setTheme(getPreferredTheme());
+
+        // Event listener saat tombol diklik
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        });
+    });
+</script>
 @endsection

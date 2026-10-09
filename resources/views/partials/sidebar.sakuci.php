@@ -72,7 +72,7 @@
                 </svg>
             </button>
             <a href="{{ $logoUrl }}" class="fs-6 fw-bold text-uppercase tracking-wider text-decoration-none text-body text-truncate m-0">
-                {{ config('app.name', 'PINVERA') }}
+                {{ config('app.name', 'GoPENA') }}
             </a>
         </div>
 
@@ -249,6 +249,13 @@
                     <a href="{{ route('petugas.peminjaman.index') }}" class="sidebar-link {{ $active ? 'active' : '' }}">
                         <i class="bi bi-check-circle-fill"></i>
                         <span>Persetujuan Peminjaman</span>
+                    </a>
+                </li>
+                <li>
+                    @php $active = $isActive('/petugas/peminjaman/cetak-laporan'); @endphp
+                    <a href="{{ route('peminjaman.cetak') }}" class="sidebar-link {{ $active ? 'active' : '' }}">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Cetak Laporan</span>
                     </a>
                 </li>
             @endif

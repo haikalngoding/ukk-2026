@@ -104,3 +104,10 @@ Route::group(['prefix' => 'petugas', 'middleware' => 'petugas'], function () {
 // @role:petugas:end
 
 // @generated-roles:end
+// Route Cetak Laporan
+Route::get('/peminjaman/cetak-laporan', [PeminjamanController::class, 'cetaklaporan'])->name('peminjaman.cetak');
+
+// Route CRUD Peminjaman
+Route::resource('peminjaman', PeminjamanController::class);
+// ROUTE CETAK LAPORAN PETUGAS (Letakkan DI ATAS route ber-parameter {id})
+Route::get('/petugas/peminjaman/cetak', [PeminjamanController::class, 'cetakLaporanPetugas'])->name('petugas.peminjaman.cetak');
