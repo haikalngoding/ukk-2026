@@ -1,4 +1,4 @@
-<?php
+x   <?php
 
 use App\Controllers\Core\AuthController;
 use App\Controllers\Core\DashboardController;
@@ -12,6 +12,12 @@ use App\Controllers\PeminjamanController;
 use App\Controllers\PengembalianController;
 use App\Controllers\LogAktifitasController;
 use Sakuci\Route;
+
+use App\Models\Alat;
+
+Route::get('/api/katalog-alat', function () {
+    return response()->json(Alat::all());
+})->name('api.katalog.alat');
 
 Route::get('/', function () {
     return view('welcome');
