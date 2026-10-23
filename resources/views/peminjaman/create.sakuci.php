@@ -3,129 +3,188 @@
 @section('title', config('app.name') . ' -- Tambah Peminjaman')
 
 @section('content')
-<div class="container-fluid py-4">
+<div class="container-fluid p-0">
     
-    <!-- Header Halaman -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-bold mb-1">Tambah Peminjaman Alat</h2>
-            <p class="text-muted small mb-0">Formulir penambahan data peminjaman inventaris baru oleh admin.</p>
+    <!-- HEADER HALAMAN -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="bg-primary-subtle text-primary rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm" style="width: 55px; height: 55px;">
+                <i class="bi bi-plus-circle-fill fs-3"></i>
+            </div>
+            <div>
+                <span class="badge bg-body-secondary text-body-secondary rounded-pill px-3 py-1 mb-1 fw-semibold border">Form Tambah</span>
+                <h3 class="fw-bold mb-0 text-body">Tambah Peminjaman Alat</h3>
+                <p class="text-body-secondary mb-0 fs-7">Formulir penambahan data peminjaman inventaris baru oleh admin.</p>
+            </div>
         </div>
-        <a href="{{ route('peminjaman.index') }}" class="btn btn-secondary shadow-sm">
-            <i class="bi bi-arrow-left me-1"></i> Kembali
+        
+        <a href="{{ route('peminjaman.index') }}" class="btn btn-light border shadow-sm rounded-pill px-4 py-2 fw-medium hover-lift d-flex align-items-center gap-2">
+            <i class="bi bi-arrow-left"></i> Batal & Kembali
         </a>
     </div>
 
-    <!-- Card Pembungkus Form -->
-    <div class="card border shadow-sm rounded-4 overflow-hidden col-lg-8 mx-auto">
-        <div class="card-body p-4">
-            
-            <form action="{{ route('peminjaman.store') }}" method="POST">
-                @csrf
+    <!-- AREA FORM -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 position-relative overflow-hidden">
+                <!-- Aksen Garis Atas (Warna Biru / Primary) -->
+                <div class="position-absolute top-0 start-0 w-100 bg-primary" style="height: 4px;"></div>
                 
-                <div class="mb-3">
-                    <label for="id_user" class="form-label fw-semibold">Pilih User / Peminjam</label>
-                    <select name="id_user" id="id_user" class="form-select" required>
-                        <option value="">-- Pilih User --</option>
-                        @foreach($users as $user)
-                            <option value="{{ $user->id }}">{{ $user->nama ?? $user->name ?? $user->username }}</option>
-                        @endforeach
-                    </select>
-                </div>
+                <div class="card-body p-4 p-lg-5">
+                    <form action="{{ route('peminjaman.store') }}" method="POST">
+                        @csrf
 
-                <div class="mb-3">
-                    <label for="id_alat" class="form-label fw-semibold">Pilih Alat</label>
-                    <select name="id_alat" id="id_alat" class="form-select" required>
-                        <option value="">-- Pilih Alat --</option>
-                        @foreach($alat as $item)
-                            <option value="{{ $item->id }}">{{ $item->nama_alat ?? $item->nama }}</option>
-                        @endforeach
-                    </select>
-                </div>
+                        <!-- Pilih User / Peminjam -->
+                        <div class="mb-4">
+                            <label for="id_user" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                Pilih User / Peminjam <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                    <i class="bi bi-person-fill"></i>
+                                </span>
+                                <select name="id_user" id="id_user" class="form-select form-select-lg border-0 bg-body-tertiary fs-6" required>
+                                    <option value="">-- Pilih User / Peminjam --</option>
+                                    @foreach($users as $user)
+                                        <option value="{{ $user->id }}" {{ old('id_user') == $user->id ? 'selected' : '' }}>
+                                            {{ $user->nama ?? $user->name ?? $user->username ?? 'User ID: ' . $user->id }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
 
-                <div class="mb-3">
-                    <label for="jumlah" class="form-label fw-semibold">Jumlah Unit</label>
-                    <input type="number" name="jumlah" id="jumlah" class="form-control" value="1" min="1" required>
-                </div>
+                        <!-- Pilih Alat -->
+                        <div class="mb-4">
+                            <label for="id_alat" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                Pilih Alat <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                    <i class="bi bi-tools"></i>
+                                </span>
+                                <select name="id_alat" id="id_alat" class="form-select form-select-lg border-0 bg-body-tertiary fs-6" required>
+                                    <option value="">-- Pilih Alat Inventaris --</option>
+                                    @foreach($alat as $item)
+                                        <option value="{{ $item->id }}" {{ old('id_alat') == $item->id ? 'selected' : '' }}>
+                                            {{ $item->nama_alat ?? $item->nama ?? 'Alat ID: ' . $item->id }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
 
-                <div class="mb-3">
-                    <label for="tanggal_pinjam" class="form-label fw-semibold">Tanggal Pinjam</label>
-                    <input type="date" name="tanggal_pinjam" id="tanggal_pinjam" class="form-control" required>
-                </div>
+                        <!-- Jumlah Unit -->
+                        <div class="mb-4">
+                            <label for="jumlah" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                Jumlah Unit <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                    <i class="bi bi-stack"></i>
+                                </span>
+                                <input type="number" name="jumlah" id="jumlah" class="form-control form-control-lg border-0 bg-body-tertiary fs-6" value="{{ old('jumlah', 1) }}" min="1" required placeholder="Masukkan jumlah unit...">
+                            </div>
+                        </div>
 
-                <div class="mb-3">
-                    <label for="tanggal_kembali" class="form-label fw-semibold">Tanggal Kembali (Aktual)</label>
-                    <input type="date" name="tanggal_kembali" id="tanggal_kembali" class="form-control">
-                    <div class="form-text">Bisa dikosongkan jika alat belum dikembalikan.</div>
-                </div>
+                        <!-- Tanggal Pinjam -->
+                        <div class="mb-4">
+                            <label for="tanggal_pinjam" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                Tanggal Pinjam <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                    <i class="bi bi-calendar-check"></i>
+                                </span>
+                                <input type="date" name="tanggal_pinjam" id="tanggal_pinjam" class="form-control form-control-lg border-0 bg-body-tertiary fs-6" value="{{ old('tanggal_pinjam') }}" required>
+                            </div>
+                        </div>
 
-                <div class="mb-3">
-                    <label for="status" class="form-label fw-semibold">Status Peminjaman</label>
-                    <select name="status" id="status" class="form-select" required>
-                        <option value="Pending" selected>Pending</option>
-                        <option value="Disetujui">Disetujui</option>
-                        <option value="Ditolak">Ditolak</option>
-                        <option value="Dipinjam">Dipinjam</option>
-                        <option value="Dikembalikan">Dikembalikan</option>
-                    </select>
-                </div>
+                        <!-- Tanggal Kembali -->
+                        <div class="mb-4">
+                            <label for="tanggal_kembali" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                Tanggal Kembali (Aktual)
+                            </label>
+                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                    <i class="bi bi-calendar-x"></i>
+                                </span>
+                                <input type="date" name="tanggal_kembali" id="tanggal_kembali" class="form-control form-control-lg border-0 bg-body-tertiary fs-6" value="{{ old('tanggal_kembali') }}">
+                            </div>
+                            <div class="form-text text-secondary fs-8 mt-1"><i class="bi bi-info-circle me-1"></i> Boleh dikosongkan jika alat belum dikembalikan.</div>
+                        </div>
 
-                <div class="mb-4">
-                    <label for="denda" class="form-label fw-semibold">Denda (Rp)</label>
-                    <input type="number" name="denda" id="denda" class="form-control" value="0" min="0">
-                </div>
+                        <!-- Status Peminjaman -->
+                        <div class="mb-4">
+                            <label for="status" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                Status Peminjaman <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                    <i class="bi bi-info-circle"></i>
+                                </span>
+                                <select name="status" id="status" class="form-select form-select-lg border-0 bg-body-tertiary fs-6" required>
+                                    <option value="Pending" {{ old('status', 'Pending') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="Disetujui" {{ old('status') == 'Disetujui' ? 'selected' : '' }}>Disetujui</option>
+                                    <option value="Ditolak" {{ old('status') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                                    <option value="Dipinjam" {{ old('status') == 'Dipinjam' ? 'selected' : '' }}>Dipinjam</option>
+                                    <option value="Dikembalikan" {{ old('status') == 'Dikembalikan' ? 'selected' : '' }}>Dikembalikan</option>
+                                </select>
+                            </div>
+                        </div>
 
-                <div class="d-flex justify-content-end gap-2">
-                    <a href="{{ route('peminjaman.index') }}" class="btn btn-light border px-4">Batal</a>
-                    <button type="submit" class="btn btn-primary px-4 shadow-sm">Simpan Peminjaman</button>
-                </div>
-            </form>
+                        <!-- Denda -->
+                        <div class="mb-5">
+                            <label for="denda" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                Denda (Rp)
+                            </label>
+                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                    <i class="bi bi-cash-coin"></i>
+                                </span>
+                                <input type="number" name="denda" id="denda" class="form-control form-control-lg border-0 bg-body-tertiary fs-6" value="{{ old('denda', 0) }}" min="0" placeholder="0">
+                            </div>
+                        </div>
 
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary text-white px-5 py-2.5 rounded-pill fw-bold shadow-sm hover-lift d-inline-flex align-items-center gap-2">
+                                <i class="bi bi-cloud-arrow-up-fill"></i> Simpan Peminjaman
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
 </div>
-@endsection@extends('layouts.app')
+@endsection
 
-@section('content')
-<div class="container">
-    <h2>Tambah Peminjaman Alat</h2>
-    
-    <form action="{{ route('peminjaman.store') }}" method="POST">
-        @csrf
-        
-        <div class="mb-3">
-            <label for="id_user" class="form-label">Pilih User / Peminjam</label>
-            <select name="id_user" id="id_user" class="form-control" required>
-                <option value="">-- Pilih User --</option>
-                @foreach($users as $user)
-                    <option value="{{ $user->id }}">{{ $user->nama }}</option>
-                @endforeach
-            </select>
-        </div>
+@section('scripts')
+<style>
+    .tracking-wider {
+        letter-spacing: 0.05em;
+    }
 
-        <div class="mb-3">
-            <label for="id_alat" class="form-label">Pilih Alat</label>
-            <select name="id_alat" id="id_alat" class="form-control" required>
-                <option value="">-- Pilih Alat --</option>
-                @foreach($alat as $item)
-                    <option value="{{ $item->id }}">{{ $item->nama_alat }}</option>
-                @endforeach
-            </select>
-        </div>
+    .hover-lift {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
 
-        <div class="mb-3">
-            <label for="jumlah" class="form-label">Jumlah</label>
-            <input type="number" name="jumlah" id="jumlah" class="form-control" value="1" min="1" required>
-        </div>
-
-        <div class="mb-3">
-            <label for="tanggal_pinjam" class="form-label">Tanggal Pinjam</label>
-            <input type="date" name="tanggal_pinjam" id="tanggal_pinjam" class="form-control" required>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Simpan</button>
-        <a href="{{ route('peminjaman.index') }}" class="btn btn-secondary">Kembali</a>
-    </form>
-</div>
+    /* Fokus state untuk input group dengan warna glow biru */
+    .input-group:focus-within {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    }
+    .input-group:focus-within .input-group-text,
+    .input-group:focus-within .form-control,
+    .input-group:focus-within .form-select {
+        background-color: var(--bs-body-bg) !important;
+    }
+    .form-control:focus, .form-select:focus {
+        box-shadow: none !important;
+    }
+</style>
 @endsection

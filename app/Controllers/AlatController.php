@@ -49,11 +49,14 @@ class AlatController extends Controller
 
     public function store(Request $request)
     {
+        // Tambahkan validasi untuk 'stok'
         $datal = $request->validate([
-            'nama_alat' => 'required|min:3|max:100',
-            'kode_alat' => 'required|min:3|max:100',
+            'nama_alat'   => 'required|min:3|max:100',
+            'kode_alat'   => 'required|min:3|max:100',
             'id_kategori' => 'required',
+            'stok'        => 'required|numeric|min:0', // <--- TAMBAHKAN BARIS INI
         ]);
+        
         Alat::create($datal);
         return redirect(route('alat.index'))->with('success', 'Alat berhasil ditambahkan.');
     }

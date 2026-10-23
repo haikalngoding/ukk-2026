@@ -1,4 +1,4 @@
-x   <?php
+<?php
 
 use App\Controllers\Core\AuthController;
 use App\Controllers\Core\DashboardController;
@@ -15,9 +15,8 @@ use Sakuci\Route;
 
 use App\Models\Alat;
 
-Route::get('/api/katalog-alat', function () {
-    return response()->json(Alat::all());
-})->name('api.katalog.alat');
+// Pastikan menggunakan array controller seperti route lainnya di Sakuci
+Route::get('/api/katalog-alat', [App\Controllers\PeminjamanController::class, 'apiKatalog']);
 
 Route::get('/', function () {
     return view('welcome');
@@ -109,7 +108,6 @@ Route::group(['prefix' => 'petugas', 'middleware' => 'petugas'], function () {
 });
 // @role:petugas:end
 
-// @generated-roles:end
 // Route Cetak Laporan
 Route::get('/peminjaman/cetak-laporan', [PeminjamanController::class, 'cetaklaporan'])->name('peminjaman.cetak');
 

@@ -44,7 +44,7 @@
 
         <!-- Kop Laporan -->
         <div class="text-center border-bottom pb-3 mb-4">
-            <h3 class="fw-bold text-uppercase m-0">Laporan Pengembalian Alat PINVERA</h3>
+            <h3 class="fw-bold text-uppercase m-0">Laporan Pengembalian Alat GoPENA</h3>
             <p class="text-muted m-0 small">Sistem Inventaris Peminjaman Alat Olahraga</p>
             <p class="text-muted small">Dicetak pada: {{ date('d F Y H:i') }} oleh {{ $user->username ?? 'Petugas' }}</p>
         </div>
@@ -92,7 +92,7 @@
             <div class="col-4 text-center">
                 <p class="mb-5">Petugas Pengelola,</p>
                 <br>
-                <p class="fw-bold border-bottom pb-1 mb-0">{{ $user->username ?? 'Petugas PINVERA' }}</p>
+                <p class="fw-bold border-bottom pb-1 mb-0">{{ $user->username ?? 'Petugas GoPENA' }}</p>
                 <small class="text-muted">NIP. ............................</small>
             </div>
         </div>

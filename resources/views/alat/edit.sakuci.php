@@ -1,95 +1,137 @@
 @extends('layouts.app')
 
-@section('title', config('app.name') . ' -- Kerangka PHP Ringan')
+@section('title', config('app.name') . ' -- Edit Alat')
 
 @section('content')
-
-{{-- CSS Kustom Desain Minimalis & Elegan --}}
-<style>
-    .edit-card {
-        background-color: var(--bs-body-bg);
-        border: 1px solid var(--bs-border-color-translucent);
-        border-radius: 1.25rem;
-        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.05);
-    }
-    .form-floating > .form-control, 
-    .form-floating > .form-select {
-        border-radius: 0.75rem;
-        border-color: var(--bs-border-color-translucent);
-        background-color: transparent;
-        color: var(--bs-body-color);
-        padding-left: 1.25rem;
-        padding-right: 1.25rem;
-    }
-    .form-floating > .form-control:focus, 
-    .form-floating > .form-select:focus {
-        border-color: var(--bs-primary);
-        box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.12);
-        background-color: transparent;
-    }
-    .form-floating > label {
-        padding-left: 1.25rem;
-        color: var(--bs-secondary-color);
-        font-weight: 500;
-    }
-    .btn-action-pill {
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-        border-radius: 0.75rem;
-        transition: all 0.2s ease-in-out;
-    }
-</style>
-
-<div class="container-fluid px-0 py-4" style="max-width: 600px;">
+<div class="container-fluid p-0">
     
-    {{-- Header Judul Minimalis --}}
-    <div class="text-center mb-4">
-        <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-15 text-primary rounded-circle mb-3 shadow-2xs" style="width: 60px; height: 60px;">
-            <i class="bi bi-tools fs-4"></i>
+    <!-- HEADER HALAMAN -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="bg-primary-subtle text-primary-emphasis rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm" style="width: 55px; height: 55px;">
+                <i class="bi bi-pencil-square fs-3"></i>
+            </div>
+            <div>
+                <span class="badge bg-body-secondary text-body-secondary rounded-pill px-3 py-1 mb-1 fw-semibold border">Form Edit</span>
+                <h3 class="fw-bold mb-0 text-body">Edit Alat</h3>
+                <p class="text-body-secondary mb-0 fs-7">Perbarui informasi data alat inventaris dengan benar.</p>
+            </div>
         </div>
-        <h2 class="fw-bold text-body">Edit Alat</h2>
-        <p class="text-secondary small mb-0">Perbarui informasi data alat di bawah ini dengan benar.</p>
+        
+        <a href="{{ route('alat.index') }}" class="btn btn-light border shadow-sm rounded-pill px-4 py-2 fw-medium hover-lift d-flex align-items-center gap-2">
+            <i class="bi bi-arrow-left"></i> Batal & Kembali
+        </a>
     </div>
 
-    {{-- Kartu Utama Form --}}
-    <div class="card edit-card border-0 p-4 p-md-5">
-        <form action="{{ route('alat.update', ['id_alat' => $datal->id_alat]) }}" method="POST" class="needs-validation" novalidate>
-            @csrf
-            @method('PUT')
+    <!-- AREA FORM -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 position-relative overflow-hidden">
+                <!-- Aksen Garis Atas (Warna Kuning/Warning untuk Edit) -->
+                <div class="position-absolute top-0 start-0 w-100 bg-primary" style="height: 4px;"></div>
+                
+                <div class="card-body p-4 p-lg-5">
+                    <form action="{{ route('alat.update', ['id_alat' => $datal->id_alat]) }}" method="POST">
+                        @csrf
+                        @method('PUT')
 
-            <div class="form-floating mb-3">
-                <input type="text" name="nama_alat" id="nama_alat" class="form-control" value="{{ $datal->nama_alat }}" placeholder="Nama alat" required>
-                <label for="nama_alat">Nama alat</label>
-            </div>
-            
-            <div class="form-floating mb-3">
-                <input type="text" name="kode_alat" id="kode_alat" class="form-control" value="{{ $datal->kode_alat }}" placeholder="Kode alat" required>
-                <label for="kode_alat">Kode alat</label>
-            </div>
+                        <div class="mb-4">
+                            <label for="nama_alat" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                Nama Alat <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                    <i class="bi bi-tools"></i>
+                                </span>
+                                <input type="text" name="nama_alat" id="nama_alat" class="form-control form-control-lg border-0 bg-body-tertiary fs-6" value="{{ $datal->nama_alat }}" placeholder="Masukkan nama alat..." required autofocus>
+                            </div>
+                        </div>
 
-            <div class="form-floating mb-4">
-                <select name="id_kategori" id="id_kategori" class="form-select" required>
-                    <option value="">-- Pilih Kategori --</option>
-                    @foreach ($kategori as $k)
-                        <option value="{{ $k->id_kategori }}" {{ $datal->id_kategori == $k->id_kategori ? 'selected' : '' }}>
-                            {{ $k->nama_kategori }}
-                        </option>
-                    @endforeach
-                </select>
-                <label for="id_kategori">Kategori</label>
-            </div>
+                        <div class="mb-4">
+                            <label for="kode_alat" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                Kode Alat <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                    <i class="bi bi-upc-scan"></i>
+                                </span>
+                                <input type="text" name="kode_alat" id="kode_alat" class="form-control form-control-lg border-0 bg-body-tertiary fs-6 font-monospace" value="{{ $datal->kode_alat }}" placeholder="Contoh: ALT-001..." required>
+                            </div>
+                        </div>
 
-            <div class="d-flex align-items-center justify-content-end gap-3 pt-3 border-top border-secondary-subtle">
-                <button type="button" class="btn btn-light border btn-action-pill text-secondary px-4" onclick="window.history.back();">
-                    Batal
-                </button>
-                <button type="submit" class="btn btn-primary btn-action-pill px-4 shadow-sm">
-                    Simpan Perubahan
-                </button>
+                        <div class="mb-4">
+                            <label for="id_kategori" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                Kategori Alat <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                    <i class="bi bi-tags-fill"></i>
+                                </span>
+                                <select name="id_kategori" id="id_kategori" class="form-select form-select-lg border-0 bg-body-tertiary fs-6" required>
+                                    <option value="">-- Pilih Kategori --</option>
+                                    @foreach ($kategori as $k)
+                                        <option value="{{ $k->id_kategori }}" {{ $datal->id_kategori == $k->id_kategori ? 'selected' : '' }}>
+                                            {{ $k->nama_kategori }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <label for="stok" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                Jumlah Stok <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                    <i class="bi bi-box-seam"></i>
+                                </span>
+                                <!-- value="$datal->stok" sudah ditambahkan agar stok lamanya muncul -->
+                                <input type="number" class="form-control form-control-lg border-0 bg-body-tertiary fs-6" id="stok" name="stok" required min="0" value="{{ $datal->stok ?? '' }}" placeholder="Masukkan angka stok...">
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary text-white px-5 py-2.5 rounded-pill fw-bold shadow-sm hover-lift d-inline-flex align-items-center gap-2">
+                                <i class="bi bi-save-fill"></i> Simpan Perubahan
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
 
 </div>
+@endsection
 
+@section('scripts')
+<style>
+    /* Spasi huruf untuk label agar terlihat elegan */
+    .tracking-wider {
+        letter-spacing: 0.05em;
+    }
+
+    /* Efek hover untuk tombol */
+    .hover-lift {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+
+    /* Fokus state untuk input group (Glow Kuning) */
+    .input-group:focus-within {
+        box-shadow: 0 0 0 0.25rem rgba(28, 31, 219, 0.25) !important;
+    }
+    .input-group:focus-within .input-group-text,
+    .input-group:focus-within .form-control,
+    .input-group:focus-within .form-select {
+        background-color: var(--bs-body-bg) !important;
+    }
+    .form-control:focus, .form-select:focus {
+        box-shadow: none !important;
+    }
+</style>
 @endsection

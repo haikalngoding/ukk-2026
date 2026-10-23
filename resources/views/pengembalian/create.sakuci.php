@@ -3,80 +3,166 @@
 @section('title', config('app.name') . ' -- Tambah Pengembalian')
 
 @section('content')
-<div class="container-fluid py-4 px-4">
+<div class="container-fluid p-0">
     
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
-        <div>
-            <h3 class="fw-bold mb-1 tracking-tight">Tambah Pengembalian</h3>
-            <p class="text-body-secondary small mb-0">Catat transaksi pengembalian alat baru.</p>
+    <!-- HEADER HALAMAN -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="bg-primary-subtle text-primary rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm" style="width: 55px; height: 55px;">
+                <i class="bi bi-plus-circle-fill fs-3"></i>
+            </div>
+            <div>
+                <span class="badge bg-body-secondary text-body-secondary rounded-pill px-3 py-1 mb-1 fw-semibold border">Form Tambah</span>
+                <h3 class="fw-bold mb-0 text-body">Tambah Pengembalian</h3>
+                <p class="text-body-secondary mb-0 fs-7">Catat transaksi pengembalian alat baru ke dalam sistem.</p>
+            </div>
         </div>
-        <a href="{{ route('pengembalian.index') }}" class="btn btn-outline-secondary btn-sm px-3 py-2 rounded-3 d-inline-flex align-items-center gap-2">
-            <i class="bi bi-arrow-left"></i>
-            <span class="fw-medium">Kembali</span>
+        
+        <a href="{{ route('pengembalian.index') }}" class="btn btn-light border shadow-sm rounded-pill px-4 py-2 fw-medium hover-lift d-flex align-items-center gap-2">
+            <i class="bi bi-arrow-left"></i> Batal & Kembali
         </a>
     </div>
 
-    <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body p-4">
-            <form action="{{ route('pengembalian.store') }}" method="POST">
-                @csrf
+    <!-- AREA FORM -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 position-relative overflow-hidden">
+                <!-- Aksen Garis Atas (Warna Biru / Primary) -->
+                <div class="position-absolute top-0 start-0 w-100 bg-primary" style="height: 4px;"></div>
+                
+                <div class="card-body p-4 p-lg-5">
+                    <form action="{{ route('pengembalian.store') }}" method="POST">
+                        @csrf
 
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="id_peminjaman" class="form-label fw-semibold fs-7">Pilih Peminjaman</label>
-                        <select name="id_peminjaman" id="id_peminjaman" class="form-select rounded-3 shadow-2xs" required>
-                            <option value="" disabled selected>-- Pilih Data Peminjaman --</option>
-                            @foreach($peminjaman as $p)
-                                @php
-                                    $pid = $p->id_peminjaman ?? $p->id;
-                                    $uname = $userList[$p->id_user] ?? 'User #'.$p->id_user;
-                                    $alatName = $alatList[$p->id_alat] ?? 'Alat #'.$p->id_alat;
-                                @endphp
-                                <option value="{{ $pid }}" {{ old('id_peminjaman') == $pid ? 'selected' : '' }}>
-                                    ID #{{ $pid }} - {{ $uname }} ({{ $alatName }})
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                        <div class="row g-4">
+                            <!-- Pilih Peminjaman -->
+                            <div class="col-md-6">
+                                <label for="id_peminjaman" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                    Data Peminjaman <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                    <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                        <i class="bi bi-clipboard-data"></i>
+                                    </span>
+                                    <select name="id_peminjaman" id="id_peminjaman" class="form-select form-select-lg border-0 bg-body-tertiary fs-6" required>
+                                        <option value="" disabled selected>-- Pilih Data Peminjaman --</option>
+                                        @foreach($peminjaman as $p)
+                                            @php
+                                                $pid = $p->id_peminjaman ?? $p->id;
+                                                $uname = $userList[$p->id_user] ?? 'User #'.$p->id_user;
+                                                $alatName = $alatList[$p->id_alat] ?? 'Alat #'.$p->id_alat;
+                                            @endphp
+                                            <option value="{{ $pid }}" {{ old('id_peminjaman') == $pid ? 'selected' : '' }}>
+                                                ID #{{ $pid }} - {{ $uname }} ({{ $alatName }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
 
-                    <div class="col-md-6">
-                        <label for="tanggal_pengembalian" class="form-label fw-semibold fs-7">Tanggal Pengembalian</label>
-                        <input type="datetime-local" name="tanggal_pengembalian" id="tanggal_pengembalian" class="form-control rounded-3" value="{{ old('tanggal_pengembalian', date('Y-m-d\TH:i')) }}" required>
-                    </div>
+                            <!-- Tanggal Pengembalian -->
+                            <div class="col-md-6">
+                                <label for="tanggal_pengembalian" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                    Tanggal Kembali <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                    <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                        <i class="bi bi-calendar-event"></i>
+                                    </span>
+                                    <input type="datetime-local" name="tanggal_pengembalian" id="tanggal_pengembalian" class="form-control form-control-lg border-0 bg-body-tertiary fs-6" value="{{ old('tanggal_pengembalian', date('Y-m-d\TH:i')) }}" required>
+                                </div>
+                            </div>
 
-                    <div class="col-md-4">
-                        <label for="terlambat_hari" class="form-label fw-semibold fs-7">Terlambat (Hari)</label>
-                        <input type="number" min="0" name="terlambat_hari" id="terlambat_hari" class="form-control rounded-3" value="{{ old('terlambat_hari', 0) }}">
-                    </div>
+                            <!-- Terlambat (Hari) -->
+                            <div class="col-md-4">
+                                <label for="terlambat_hari" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">Terlambat (Hari)</label>
+                                <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                    <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                        <i class="bi bi-clock-history"></i>
+                                    </span>
+                                    <input type="number" min="0" name="terlambat_hari" id="terlambat_hari" class="form-control form-control-lg border-0 bg-body-tertiary fs-6" value="{{ old('terlambat_hari', 0) }}">
+                                </div>
+                            </div>
 
-                    <div class="col-md-4">
-                        <label for="denda" class="form-label fw-semibold fs-7">Denda (Rp)</label>
-                        <input type="number" min="0" name="denda" id="denda" class="form-control rounded-3" value="{{ old('denda', 0) }}">
-                    </div>
+                            <!-- Denda -->
+                            <div class="col-md-4">
+                                <label for="denda" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">Denda (Rp)</label>
+                                <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                    <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                        <i class="bi bi-cash-coin"></i>
+                                    </span>
+                                    <input type="number" min="0" name="denda" id="denda" class="form-control form-control-lg border-0 bg-body-tertiary fs-6" value="{{ old('denda', 0) }}">
+                                </div>
+                            </div>
 
-                    <div class="col-md-4">
-                        <label for="kondisi_barang" class="form-label fw-semibold fs-7">Kondisi Barang</label>
-                        <select name="kondisi_barang" id="kondisi_barang" class="form-select rounded-3">
-                            <option value="Baik" {{ old('kondisi_barang') == 'Baik' ? 'selected' : '' }}>Baik</option>
-                            <option value="Rusak Ringan" {{ old('kondisi_barang') == 'Rusak Ringan' ? 'selected' : '' }}>Rusak Ringan</option>
-                            <option value="Rusak Berat" {{ old('kondisi_barang') == 'Rusak Berat' ? 'selected' : '' }}>Rusak Berat</option>
-                            <option value="Hilang" {{ old('kondisi_barang') == 'Hilang' ? 'selected' : '' }}>Hilang</option>
-                        </select>
-                    </div>
+                            <!-- Kondisi Barang -->
+                            <div class="col-md-4">
+                                <label for="kondisi_barang" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">Kondisi Barang</label>
+                                <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                    <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                        <i class="bi bi-clipboard-check"></i>
+                                    </span>
+                                    <select name="kondisi_barang" id="kondisi_barang" class="form-select form-select-lg border-0 bg-body-tertiary fs-6">
+                                        <option value="Baik" {{ old('kondisi_barang') == 'Baik' ? 'selected' : '' }}>Baik</option>
+                                        <option value="Rusak Ringan" {{ old('kondisi_barang') == 'Rusak Ringan' ? 'selected' : '' }}>Rusak Ringan</option>
+                                        <option value="Rusak Berat" {{ old('kondisi_barang') == 'Rusak Berat' ? 'selected' : '' }}>Rusak Berat</option>
+                                        <option value="Hilang" {{ old('kondisi_barang') == 'Hilang' ? 'selected' : '' }}>Hilang</option>
+                                    </select>
+                                </div>
+                            </div>
 
-                    <div class="col-12">
-                        <label for="catatan" class="form-label fw-semibold fs-7">Catatan</label>
-                        <textarea name="catatan" id="catatan" rows="3" class="form-control rounded-3" placeholder="Tambahkan catatan jika ada...">{{ old('catatan') }}</textarea>
-                    </div>
+                            <!-- Catatan -->
+                            <div class="col-12 mb-2">
+                                <label for="catatan" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">Catatan</label>
+                                <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                    <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3 align-items-start pt-3">
+                                        <i class="bi bi-card-text"></i>
+                                    </span>
+                                    <textarea name="catatan" id="catatan" rows="3" class="form-control border-0 bg-body-tertiary fs-6" placeholder="Tambahkan catatan jika ada...">{{ old('catatan') }}</textarea>
+                                </div>
+                            </div>
 
-                    <div class="col-12 d-flex justify-content-end gap-2 mt-4">
-                        <a href="{{ route('pengembalian.index') }}" class="btn btn-light px-4 py-2 rounded-3 fw-medium">Batal</a>
-                        <button type="submit" class="btn btn-primary px-4 py-2 rounded-3 shadow-sm fw-medium">Simpan Data</button>
-                    </div>
+                            <!-- Tombol Simpan -->
+                            <div class="col-12 d-flex justify-content-end mt-4">
+                                <button type="submit" class="btn btn-primary text-white px-5 py-2.5 rounded-pill fw-bold shadow-sm hover-lift d-inline-flex align-items-center gap-2">
+                                    <i class="bi bi-cloud-arrow-up-fill"></i> Simpan Data Pengembalian
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
 </div>
+@endsection
+
+@section('scripts')
+<style>
+    .tracking-wider {
+        letter-spacing: 0.05em;
+    }
+
+    .hover-lift {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+
+    /* Fokus state untuk input group dengan warna glow biru */
+    .input-group:focus-within {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    }
+    .input-group:focus-within .input-group-text,
+    .input-group:focus-within .form-control,
+    .input-group:focus-within .form-select {
+        background-color: var(--bs-body-bg) !important;
+    }
+    .form-control:focus, .form-select:focus {
+        box-shadow: none !important;
+    }
+</style>
 @endsection

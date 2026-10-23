@@ -286,6 +286,17 @@
                 </button>
             </form>
         </div>
+    @else
+        <!-- JIKA BELUM LOGIN, TAMPILKAN TOMBOL MASUK & DAFTAR -->
+        <div class="d-flex flex-column gap-2 px-1 flex-shrink-0 pt-1">
+            <a href="{{ url('/login') }}" class="btn btn-sm btn-primary w-100 rounded-3 d-flex align-items-center justify-content-center gap-2 py-2">
+                <i class="bi bi-box-arrow-in-right"></i>
+                <span class="fw-medium">Masuk</span>
+            </a>
+            <a href="{{ url('/register') }}" class="btn btn-sm btn-outline-primary w-100 rounded-3 d-flex align-items-center justify-content-center gap-2 py-2">
+                <i class="bi bi-person-plus"></i>
+                <span class="fw-medium">Daftar Akun</span>
+            </a>
+        </div>
     @endif
-
 </div>

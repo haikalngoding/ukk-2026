@@ -103,7 +103,7 @@
                         <div class="bg-primary text-white rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
                             <i class="bi bi-trophy-fill fs-4"></i>
                         </div>
-                        <span class="fs-3 fw-bold text-body">{{ config('app.name', 'PINVERA') }}</span>
+                        <span class="fs-3 fw-bold text-body">{{ config('app.name', 'GoPENA') }}</span>
                     </div>
 
                     <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-semibold mb-3 border border-primary-subtle d-inline-flex align-items-center gap-2">
@@ -144,91 +144,30 @@
                 </div>
                 
                 {{-- Kanan: Form Auth / Dashboard Status Sidebar --}}
-                <div class="col-lg-6 position-relative z-1">
-                    <div class="card border border-secondary-subtle shadow-lg rounded-5 glass-card p-4 p-md-4 position-relative overflow-hidden">
-                        
-                        @php 
-                            $currentUser = class_exists('\App\Models\User') && method_exists('\App\Models\User', 'current') 
-                                ? \App\Models\User::current() 
-                                : auth()->user(); 
-                        @endphp
+               <div class="col-lg-6 position-relative z-1">
+    @php 
+        $currentUser = class_exists('\App\Models\User') && method_exists('\App\Models\User', 'current') 
+            ? \App\Models\User::current() 
+            : auth()->user(); 
+    @endphp
 
-                        @if($currentUser)
-                            <div class="text-center py-4">
-                                <div class="bg-primary-subtle text-primary rounded-circle p-3 d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
-                                    <i class="bi bi-person-check-fill fs-1"></i>
-                                </div>
-                                <h4 class="fw-bold text-body mb-1">Selamat Datang Kembali!</h4>
-                                <p class="text-body-secondary mb-4">{{ $currentUser->name ?? $currentUser->username ?? 'Pengguna' }}</p>
-                                
-                                <a href="{{ route('dashboard') }}" class="btn btn-primary btn-lg px-5 py-3 fw-semibold rounded-pill shadow w-100 mb-2">
-                                    <i class="bi bi-speedometer2 me-2"></i> Buka Dashboard
-                                </a>
-                            </div>
-                        @else
-                            <ul class="nav nav-pills nav-justified mb-4 p-1 bg-body-tertiary rounded-pill border border-secondary-subtle" id="authTab" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active py-2" id="login-tab" data-bs-toggle="pill" data-bs-target="#login-pane" type="button" role="tab">
-                                        <i class="bi bi-box-arrow-in-right me-1"></i> Masuk
-                                    </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link py-2" id="register-tab" data-bs-toggle="pill" data-bs-target="#register-pane" type="button" role="tab">
-                                        <i class="bi bi-person-plus me-1"></i> Daftar
-                                    </button>
-                                </li>
-                            </ul>
-
-                            <div class="tab-content" id="authTabContent">
-                                <div class="tab-pane fade show active" id="login-pane" role="tabpanel">
-                                    <form action="{{ route('login') }}" method="POST">
-                                        @csrf
-                                        <div class="mb-3">
-                                            <label class="form-label small fw-semibold text-body">Username / Email</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-person"></i></span>
-                                                <input type="text" name="username" class="form-control border-secondary-subtle" placeholder="Masukkan username" required>
-                                            </div>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label class="form-label small fw-semibold text-body">Kata Sandi</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text bg-body-tertiary border-secondary-subtle"><i class="bi bi-lock"></i></span>
-                                                <input type="password" name="password" class="form-control border-secondary-subtle" placeholder="••••••••" required>
-                                            </div>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-semibold rounded-pill shadow-sm">
-                                            Masuk ke Akun <i class="bi bi-arrow-right ms-1"></i>
-                                        </button>
-                                    </form>
-                                </div>
-
-                                <div class="tab-pane fade" id="register-pane" role="tabpanel">
-                                    <form action="{{ route('register') }}" method="POST">
-                                        @csrf
-                                        <div class="mb-3">
-                                            <label class="form-label small fw-semibold text-body">Nama Lengkap</label>
-                                            <input type="text" name="name" class="form-control border-secondary-subtle" placeholder="Nama Anda" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label small fw-semibold text-body">Username</label>
-                                            <input type="text" name="username" class="form-control border-secondary-subtle" placeholder="Username unik" required>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label class="form-label small fw-semibold text-body">Kata Sandi</label>
-                                            <input type="password" name="password" class="form-control border-secondary-subtle" placeholder="••••••••" required>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-semibold rounded-pill shadow-sm">
-                                            Buat Akun Baru <i class="bi bi-check-circle ms-1"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        @endif
-
-                    </div>
+    <!-- Pengecekan dipindah ke sini, agar Card tidak digambar jika belum login -->
+    @if($currentUser)
+        <div class="card border border-secondary-subtle shadow-lg rounded-5 glass-card p-4 p-md-4 position-relative overflow-hidden">
+            <div class="text-center py-4">
+                <div class="bg-primary-subtle text-primary rounded-circle p-3 d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
+                    <i class="bi bi-person-check-fill fs-1"></i>
                 </div>
-
+                <h4 class="fw-bold text-body mb-1">Selamat Datang Kembali!</h4>
+                <p class="text-body-secondary mb-4">{{ $currentUser->name ?? $currentUser->username ?? 'Pengguna' }}</p>
+                
+                <a href="{{ route('admin.dashboard') }}" class="btn btn-primary btn-lg px-5 py-3 fw-semibold rounded-pill shadow w-100 mb-2">
+                    <i class="bi bi-speedometer2 me-2"></i> Buka Dashboard
+                </a>
+            </div>
+        </div>
+    @endif
+</div>
             </div>
         </div>
     </section>
@@ -280,7 +219,7 @@
 
                 <div class="col-md-4">
                     <div class="card border-secondary-subtle shadow-sm rounded-4 bg-body p-4 h-100 hover-lift">
-                        <div class="step-number bg-primary text-white mb-4 shadow-sm">02</div>
+                        <div class="step-number bg-primary-subtle text-primary mb-4 border border-primary-subtle">02</div>
                         <h4 class="fw-bold fs-5 text-body mb-2">Pilih & Ajukan Alat</h4>
                         <p class="text-body-secondary small mb-0 lh-base">
                             Cari alat olahraga yang ingin kamu gunakan, tentukan durasi peminjaman, dan kirimkan pengajuan langsung lewat sistem.
@@ -304,9 +243,7 @@
     {{-- Footer --}}
     <footer class="py-4 bg-body border-top border-secondary-subtle text-center px-4 px-lg-5">
         <div class="container-fluid px-0 d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
-            <p class="text-body-secondary small mb-0">
-                &copy; {{ date('Y') }} <strong>{{ config('app.name', 'PINVERA') }}</strong>. Developed with Sakuci Framework.
-            </p>
+            
         </div>
     </footer>
 
@@ -325,52 +262,79 @@
         }
     })();
 
-    // 2. Fetch Data Real-Time (Perbaikan Penanganan Response)
+    // 2. Fetch Data (Versi Debugging Paksa)
     function loadKatalogRealtime() {
         const container = document.getElementById('katalog-realtime');
         if (!container) return;
 
-        fetch("{{ route('api.katalog.alat') }}")
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("HTTP error " + response.status);
-                }
-                return response.json();
-            })
-            .then(resData => {
-                // Ekstrak data jika dikembalikan dalam bentuk objek wrapper { data: [...] } atau array langsung
-                let items = [];
-                if (Array.isArray(resData)) {
-                    items = resData;
-                } else if (resData && Array.isArray(resData.data)) {
-                    items = resData.data;
-                }
+        container.innerHTML = `<div class="col-12 text-center py-4 text-warning">Sedang mencoba menarik data API...</div>`;
 
-                if (items.length === 0) {
-                    container.innerHTML = `<div class="col-12 text-center py-4 text-body-secondary"><i class="bi bi-inbox fs-3 d-block mb-1"></i>Belum ada data peralatan olahraga.</div>`;
+        // Gunakan relative path agar kebal terhadap bentrok HTTP / HTTPS
+        fetch("/api/katalog-alat")
+            .then(response => {
+                if (!response.ok) throw new Error("HTTP Status: " + response.status);
+                return response.text(); // Tarik sebagai teks mentah dulu
+            })
+            .then(textData => {
+                let data;
+                try {
+                    data = JSON.parse(textData); // Coba jadikan JSON
+                } catch (e) {
+                    // Jika gagal jadi JSON, tampilkan teks aslinya di layar
+                    container.innerHTML = `<div class="col-12 alert alert-danger"><b>Error Parsing JSON:</b><br>${textData.substring(0, 150)}...</div>`;
                     return;
                 }
 
-                let html = '';
-                items.forEach(item => {
-                    const nama = item.nama_alat || item.nama || item.name || 'Alat Olahraga';
-                    const stok = item.stok !== undefined ? item.stok : (item.stok_alat !== undefined ? item.stok_alat : (item.stock || 0));
-                    const deskripsi = item.kategori || item.deskripsi || item.description || 'Peralatan Siap Pakai';
+                // Normalisasi Data
+                let items = [];
+                if (Array.isArray(data)) {
+                    items = data;
+                } else if (data && typeof data === 'object') {
+                    // Jika dibungkus objek
+                    items = data.data || data.alat || Object.values(data);
+                }
 
-                    const isReady = Number(stok) > 0;
-                    const badgeClass = isReady ? 'bg-success text-white' : 'bg-danger text-white';
-                    const statusText = isReady ? `Ready (${stok})` : 'Habis';
+                if (!Array.isArray(items) || items.length === 0) {
+                    container.innerHTML = `<div class="col-12 alert alert-warning">Data kosong atau format tidak sesuai. Isi raw data: ${JSON.stringify(data).substring(0, 100)}</div>`;
+                    return;
+                }
+
+                // Jika berhasil, render HTML
+                let html = '';
+                // Fungsi untuk menentukan ikon berdasarkan nama alat
+function tentukanIkon(namaAlat) {
+    const nama = namaAlat.toLowerCase();
+    
+    if (nama.includes('basket')) return '🏀';
+    if (nama.includes('voli') || nama.includes('volley')) return '🏐';
+    if (nama.includes('raket') || nama.includes('badminton') || nama.includes('shuttlecock')) return '🏸';
+    if (nama.includes('tenis') || nama.includes('tennis')) return '🎾';
+    if (nama.includes('pingpong') || nama.includes('meja')) return '🏓';
+    if (nama.includes('sepak') || nama.includes('futsal')) return '⚽';
+    if (nama.includes('sapu')) return '🧹';
+    if (nama.includes('gawang') || nama.includes('jaring')) return '🥅';
+    
+    // Ikon default jika nama alat tidak dikenali
+    return '📦'; 
+}
+items.forEach(item => { 
+    
+    const nama = item.nama_alat || item.nama || item.name || 'Alat Olahraga';
+    
+    // Baris ini sudah disederhanakan dan langsung membaca kolom 'stok' dari database
+    const stok = item.stok !== undefined ? item.stok : 0;
+    
+    const isReady = Number(stok) > 0;
+    const badgeClass = isReady ? 'bg-success text-white' : 'bg-danger text-white';
+    const statusText = isReady ? `Ready (${stok})` : 'Habis';
 
                     html += `
                         <div class="col-md-6 col-lg-4">
                             <div class="p-3 rounded-4 bg-body hover-lift border border-secondary-subtle d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-primary-subtle text-primary rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; font-size: 1.3rem;">
-                                        ⚽
-                                    </div>
+                                    <div class="bg-primary-subtle text-primary rounded-3 p-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; font-size: 1.3rem;">⚽</div>
                                     <div>
                                         <h6 class="fw-semibold text-body mb-0">${nama}</h6>
-                                        <small class="text-body-secondary">${deskripsi}</small>
                                     </div>
                                 </div>
                                 <span class="badge ${badgeClass} px-3 py-2 rounded-pill">${statusText}</span>
@@ -382,14 +346,13 @@
                 container.innerHTML = html;
             })
             .catch(error => {
-                console.error("Gagal memuat katalog:", error);
-                container.innerHTML = `<div class="col-12 text-center py-4 text-danger"><i class="bi bi-exclamation-circle me-1"></i>Gagal memuat data inventaris. Pastikan route API terdaftar.</div>`;
+                container.innerHTML = `<div class="col-12 alert alert-danger"><b>Gagal Fetch:</b> ${error.message}</div>`;
             });
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         loadKatalogRealtime();
-        setInterval(loadKatalogRealtime, 4000);
+        // Set interval dimatikan sementara agar pesan error tidak kedap-kedip
     });
 </script>
 @endsection

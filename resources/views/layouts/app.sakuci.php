@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', config('app.name'))</title>
+    <title>@yield('title', config('app.name', 'GoPENA'))</title>
 
     <script>
         (function () {
@@ -18,12 +18,21 @@
         })();
     </script>
 
+    <!-- Menggunakan Font Poppins agar tampilan lebih Modern & Elegan -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <!-- PUSAT CSS SIDEBAR & DESAIN MODERN (COMPACT TANPA JS) -->
+    <!-- PUSAT CSS KUSTOM -->
     <style>
+        /* Terapkan Font ke Seluruh Halaman */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bs-tertiary-bg);
+        }
+
         .app-sidebar {
             width: 260px;
             min-width: 260px;
@@ -32,26 +41,31 @@
             height: 100vh;
             z-index: 1040;
             transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: var(--bs-box-shadow-sm);
+            box-shadow: 2px 0 15px rgba(0,0,0,0.03);
             overflow-y: auto;
         }
 
         /* Custom Scrollbar Tipis & Estetik */
-        .app-sidebar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .app-sidebar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .app-sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 10px;
-        }
+        .app-sidebar::-webkit-scrollbar { width: 4px; }
+        .app-sidebar::-webkit-scrollbar-track { background: transparent; }
+        .app-sidebar::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.2); border-radius: 10px; }
 
         .main-wrapper {
             flex-grow: 1;
             transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             min-width: 0;
+        }
+
+        /* Efek Kaca (Glassmorphism) untuk Navbar Atas */
+        .glass-header {
+            background: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+        }
+        [data-bs-theme="dark"] .glass-header {
+            background: rgba(33, 37, 41, 0.85) !important;
+            border-bottom: 1px solid rgba(255,255,255,0.05) !important;
         }
 
         /* Saat sidebar ditutup (collapsed) */
@@ -60,37 +74,35 @@
             margin-left: -260px;
         }
 
-        /* Desain Link Menu Sidebar yang Lebih Rapat & Pas di Satu Layar */
+        /* Desain Link Menu Sidebar */
         .sidebar-link {
             display: flex;
             align-items: center;
             gap: 0.75rem;
             border-radius: 8px;
-            padding: 0.5rem 0.85rem; /* Padding dirapatkan agar muat semua */
+            padding: 0.6rem 0.85rem;
             font-size: 0.85rem;
             font-weight: 500;
             text-decoration: none;
             color: var(--bs-body-color);
-            opacity: 0.8;
+            opacity: 0.75;
             transition: all 0.2s ease;
-            position: relative;
-            z-index: 2;
         }
         .sidebar-link i {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             flex-shrink: 0;
             transition: transform 0.2s ease;
         }
         .sidebar-link:hover {
             opacity: 1;
-            background-color: var(--bs-tertiary-bg);
+            background-color: rgba(13, 110, 253, 0.08);
             color: var(--bs-primary);
         }
         .sidebar-link:hover i {
             transform: scale(1.1);
         }
 
-        /* Status Aktif (Warna Biru Modern) */
+        /* Status Aktif */
         .sidebar-link.active {
             opacity: 1 !important;
             background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%) !important;
@@ -98,21 +110,19 @@
             font-weight: 600;
             box-shadow: 0 4px 10px rgba(13, 110, 253, 0.25);
         }
-        .sidebar-link.active i {
-            color: #ffffff !important;
-        }
+        .sidebar-link.active i { color: #ffffff !important; }
 
         .sidebar-heading {
             font-size: 0.65rem;
             letter-spacing: 0.08em;
             text-transform: uppercase;
             font-weight: 700;
-            margin-top: 0.6rem;
-            margin-bottom: 0.2rem;
+            margin-top: 0.8rem;
+            margin-bottom: 0.3rem;
         }
     </style>
 </head>
-<body class="bg-body-tertiary">
+<body>
 
     <div class="d-flex min-vh-100">
 
@@ -122,37 +132,47 @@
         {{-- Konten Utama --}}
         <div class="main-wrapper d-flex flex-column">
             
-            <!-- Navbar Atas untuk Tombol Trigger Sidebar -->
-            <header class="navbar bg-body border-bottom px-4 py-2.5 sticky-top shadow-xs">
-                <button id="sidebarToggle" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2 px-3 py-1.5 rounded-3 border-0 bg-body-secondary" type="button" aria-label="Toggle Sidebar">
-                    <i class="bi bi-list fs-5"></i>
-                    <span class="d-none d-sm-inline fw-medium">Menu</span>
-                </button>
+            <!-- Navbar Atas (Glassmorphism & Action Bar) -->
+            <header class="navbar glass-header px-4 py-3 sticky-top d-flex justify-content-between align-items-center z-3">
+                
+                <!-- Kiri: Tombol Menu & Judul -->
+                <div class="d-flex align-items-center gap-3">
+                    <button id="sidebarToggle" class="btn btn-primary shadow-sm d-flex align-items-center gap-2 px-3 py-2 rounded-3 border-0" type="button" aria-label="Toggle Sidebar">
+                        <i class="bi bi-list fs-5"></i>
+                    </button>
+                    <div class="d-none d-md-block">
+                        <h6 class="mb-0 fw-bold text-body">GoPENA Workspace</h6>
+                        <small class="text-body-secondary" style="font-size: 0.75rem;">Sistem Peminjaman Alat Sekolah</small>
+                    </div>
+                </div>
             </header>
 
             <main class="container-fluid flex-grow-1 p-4 p-lg-5">
                 @include('partials.flash')
+                
+                <!-- Ini Tempat Konten Halaman Nanti -->
                 @yield('content')
+                
             </main>
 
             @include('partials.footer')
             
         </div>
-
     </div>
 
 <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('js/theme.js') }}"></script>
 
-<!-- Skrip Pengontrol Toggle Sidebar (Bawaan Asli) -->
+<!-- Skrip Logika Sidebar & Jam Realtime -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Logika Toggle Sidebar
         const toggleBtn = document.getElementById('sidebarToggle');
         const closeBtn = document.getElementById('sidebarToggleClose');
         const body = document.body;
 
         if (!localStorage.getItem('sidebarState')) {
-            localStorage.setItem('sidebarState', 'collapsed');
+            localStorage.setItem('sidebarState', 'expanded'); // Diubah default terbuka untuk desktop
         }
 
         if (localStorage.getItem('sidebarState') === 'collapsed') {
@@ -172,6 +192,16 @@
 
         if (toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
         if (closeBtn) closeBtn.addEventListener('click', toggleSidebar);
+
+        // Skrip Jam Realtime
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const clockElement = document.getElementById('realtimeClock');
+            if (clockElement) clockElement.textContent = timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
     });
 </script>
 

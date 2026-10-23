@@ -3,54 +3,132 @@
 @section('title', config('app.name') . ' -- Tambah Alat')
 
 @section('content')
-<div class="container-fluid py-4">
+<div class="container-fluid p-0">
     
-    <!-- Header Halaman -->
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="mb-4">
-                <h2 class="fw-bold mb-1">Tambah Alat</h2>
-                <p class="text-muted small mb-0">Tambahkan inventaris alat baru ke dalam sistem.</p>
+    <!-- HEADER HALAMAN -->
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="bg-primary-subtle text-primary rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm" style="width: 55px; height: 55px;">
+                <i class="bi bi-plus-circle-fill fs-3"></i>
             </div>
+            <div>
+                <span class="badge bg-body-secondary text-body-secondary rounded-pill px-3 py-1 mb-1 fw-semibold border">Form Tambah</span>
+                <h3 class="fw-bold mb-0 text-body">Tambah Alat</h3>
+                <p class="text-body-secondary mb-0 fs-7">Tambahkan inventaris alat baru ke dalam sistem.</p>
+            </div>
+        </div>
+        
+        <a href="{{ route('alat.index') }}" class="btn btn-light border shadow-sm rounded-pill px-4 py-2 fw-medium hover-lift d-flex align-items-center gap-2">
+            <i class="bi bi-arrow-left"></i> Batal & Kembali
+        </a>
+    </div>
 
-            <!-- Card Pembungkus Form -->
-            <div class="card border shadow-sm rounded-4">
-                <div class="card-body p-4">
+    <!-- AREA FORM -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 position-relative overflow-hidden">
+                <!-- Aksen Garis Atas (Warna Biru / Primary) -->
+                <div class="position-absolute top-0 start-0 w-100 bg-primary" style="height: 4px;"></div>
+                
+                <div class="card-body p-4 p-lg-5">
                     <form action="{{ route('alat.store') }}" method="POST">
                         @csrf
 
-                        <div class="mb-3">
-                            <label for="nama_alat" class="form-label fw-semibold">Nama Alat</label>
-                            <input type="text" name="nama_alat" id="nama_alat" class="form-control" value="{{ old('nama_alat') }}" placeholder="Contoh: Bor Listrik" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="kode_alat" class="form-label fw-semibold">Kode Alat</label>
-                            <input type="text" name="kode_alat" id="kode_alat" class="form-control" value="{{ old('kode_alat') }}" placeholder="Contoh: alat ngoding" required>
+                        <div class="mb-4">
+                            <label for="nama_alat" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                Nama Alat <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                    <i class="bi bi-tools"></i>
+                                </span>
+                                <input type="text" name="nama_alat" id="nama_alat" class="form-control form-control-lg border-0 bg-body-tertiary fs-6" value="{{ old('nama_alat') }}" placeholder="Contoh: Bor Listrik..." required autofocus>
+                            </div>
                         </div>
 
                         <div class="mb-4">
-                            <label for="id_kategori" class="form-label fw-semibold">Kategori</label>
-                            <select name="id_kategori" id="id_kategori" class="form-select" required>
-                                <option value="">-- Pilih Kategori --</option>
-                                @foreach ($kategori as $k)
-                                    <option value="{{ $k->id_kategori }}" {{ old('id_kategori') == $k->id_kategori ? 'selected' : '' }}>
-                                        {{ $k->nama_kategori }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            <label for="kode_alat" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                Kode Alat <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                    <i class="bi bi-upc-scan"></i>
+                                </span>
+                                <input type="text" name="kode_alat" id="kode_alat" class="form-control form-control-lg border-0 bg-body-tertiary fs-6 font-monospace" value="{{ old('kode_alat') }}" placeholder="Contoh: alat ngoding..." required>
+                            </div>
                         </div>
 
-                        <div class="d-flex justify-content-between align-items-center">
-                            <a href="{{ route('alat.index') }}" class="btn btn-outline-secondary px-4">Kembali</a>
-                            <button type="submit" class="btn btn-primary px-4 shadow-sm">Simpan Alat</button>
+                        <div class="mb-4">
+                            <label for="id_kategori" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                Kategori Alat <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                    <i class="bi bi-tags-fill"></i>
+                                </span>
+                                <select name="id_kategori" id="id_kategori" class="form-select form-select-lg border-0 bg-body-tertiary fs-6" required>
+                                    <option value="">-- Pilih Kategori --</option>
+                                    @foreach ($kategori as$k)
+                                        <option value="{{ $k->id_kategori }}" {{ old('id_kategori') == $k->id_kategori ? 'selected' : '' }}>
+                                            {{ $k->nama_kategori }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <label for="stok" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
+                                Jumlah Stok <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
+                                    <i class="bi bi-box-seam"></i>
+                                </span>
+                                <input type="number" class="form-control form-control-lg border-0 bg-body-tertiary fs-6" id="stok" name="stok" value="{{ old('stok') }}" required min="0" placeholder="Masukkan angka stok...">
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary text-white px-5 py-2.5 rounded-pill fw-bold shadow-sm hover-lift d-inline-flex align-items-center gap-2">
+                                <i class="bi bi-cloud-arrow-up-fill"></i> Simpan Alat
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
-
         </div>
     </div>
 
 </div>
 @endsection
+
+@section('scripts')
+<style>
+    /* Spasi huruf untuk label agar terlihat elegan */
+    .tracking-wider {
+        letter-spacing: 0.05em;
+    }
+
+    /* Efek hover untuk tombol */
+    .hover-lift {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+
+    /* Fokus state untuk input group (Glow Biru) */
+    .input-group:focus-within {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+    }
+    .input-group:focus-within .input-group-text,
+    .input-group:focus-within .form-control,
+    .input-group:focus-within .form-select {
+        background-color: var(--bs-body-bg) !important;
+    }
+    .form-control:focus, .form-select:focus {
+        box-shadow: none !important;
+    }
+</style>
