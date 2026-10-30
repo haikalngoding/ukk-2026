@@ -150,22 +150,24 @@
                 </li>
 
                 <li class="nav-item">
-                    <small class="sidebar-heading text-body-secondary px-2 my-2 d-block">Transaksi</small>
+                    <small class="sidebar-heading text-body-secondary px-2 my-2 d-block">TRANSAKSI</small>
                 </li>
+
+<!-- Menu Peminjaman -->
                 <li>
-                    @php $active = $isActive('/admin/peminjaman'); @endphp
-                    <a href="{{ route('peminjaman.index') }}" class="sidebar-link {{ $active ? 'active' : '' }}">
-                        <i class="bi bi-arrow-up-right-circle-fill"></i>
+                    <a href="{{ route('peminjaman.index') }}" class="sidebar-link {{ $isActive('/peminjaman') ? 'active' : '' }}">
+                        <i class="bi bi-box-arrow-up-right"></i>
                         <span>Peminjaman</span>
                     </a>
                 </li>
+
+<!-- Menu Pengembalian -->
                 <li>
-                    @php $active = $isActive('/admin/pengembalian'); @endphp
-                    <a href="{{ route('pengembalian.index') }}" class="sidebar-link {{ $active ? 'active' : '' }}">
-                        <i class="bi bi-arrow-down-left-circle-fill"></i>
-                        <span>Pengembalian</span>
-                    </a>
-                </li>
+                    <a href="{{ route('pengembalian.index') }}" class="sidebar-link {{ $isActive('/pengembalian') ? 'active' : '' }}">
+        <i class="bi bi-arrow-return-left"></i>
+        <span>Pengembalian</span>
+    </a>
+</li>
 
                 <li class="nav-item">
                     <small class="sidebar-heading text-body-secondary px-2 my-2 d-block">Sistem</small>
@@ -236,8 +238,9 @@
                 </li>
                 <li>
                     @php 
+                        // Perbaikan: Tambahkan pengecualian untuk pengembalian agar Dashboard tidak ikut menyala
                         $active = $isActive('/petugas/dashboard') || 
-                                ($isActive('/petugas') && !$isActive('/petugas/peminjaman')); 
+                                  ($isActive('/petugas') && !$isActive('/petugas/peminjaman') && !$isActive('/petugas/pengembalian')); 
                     @endphp
                     <a href="{{ route('petugas.dashboard') }}" class="sidebar-link {{ $active ? 'active' : '' }}">
                         <i class="bi bi-grid-1x2-fill"></i>
@@ -252,10 +255,10 @@
                     </a>
                 </li>
                 <li>
-                    @php $active = $isActive('/petugas/peminjaman/cetak-laporan'); @endphp
-                    <a href="{{ route('peminjaman.cetak') }}" class="sidebar-link {{ $active ? 'active' : '' }}">
-                        <i class="bi bi-check-circle-fill"></i>
-                        <span>Cetak Laporan</span>
+                    @php $active = $isActive('/petugas/pengembalian'); @endphp
+                    <a href="{{ route('petugas.pengembalian.index') }}" class="sidebar-link {{ $active ? 'active' : '' }}">
+                        <i class="bi bi-arrow-return-left"></i>
+                        <span>Pantau Pengembalian</span>
                     </a>
                 </li>
             @endif

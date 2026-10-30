@@ -1,86 +1,84 @@
 @extends('layouts.app')
 
-@section('title', config('app.name') . ' -- Tambah Kategori')
+@section('title', config('app.name') . ' -- Edit Kategori')
 
 @section('content')
-<div class="container-fluid p-0">
+<div class="container-fluid py-4">
     
-    <!-- HEADER HALAMAN -->
+    <!-- Header Halaman -->
     <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3">
         <div class="d-flex align-items-center gap-3">
-            <!-- Warna diubah ke bg-primary-subtle dan text-primary -->
-            <div class="bg-primary-subtle text-primary rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm" style="width: 55px; height: 55px;">
-                <i class="bi bi-plus-circle-fill fs-3"></i>
+            <div class="bg-primary-subtle text-primary-emphasis rounded-circle p-2 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm" style="width: 55px; height: 55px;">
+                <i class="bi bi-pencil-square fs-3"></i>
             </div>
             <div>
-                <span class="badge bg-body-secondary text-body-secondary rounded-pill px-3 py-1 mb-1 fw-semibold border">Form Tambah</span>
-                <h3 class="fw-bold mb-0 text-body">Tambah Kategori Baru</h3>
-                <p class="text-body-secondary mb-0 fs-7">Masukkan informasi detail kategori alat inventaris yang baru.</p>
+                <span class="badge bg-body-secondary text-body-secondary rounded-pill px-3 py-1 mb-1 fw-semibold border">Form Edit</span>
+                <h3 class="fw-bold mb-0 text-body">Edit Kategori</h3>
+                <p class="text-body-secondary mb-0 fs-7">Perbarui informasi data kategori inventaris dengan benar.</p>
             </div>
         </div>
         
-        <a href="{{ route('kategori.index') }}" class="btn btn-light border shadow-sm rounded-pill px-4 py-2 fw-medium hover-lift d-flex align-items-center gap-2">
+        <a href="{{ route('alat.index') }}" class="btn btn-light border shadow-sm rounded-pill px-4 py-2 fw-medium hover-lift d-flex align-items-center gap-2">
             <i class="bi bi-arrow-left"></i> Batal & Kembali
         </a>
     </div>
 
-    <!-- AREA FORM -->
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
+            <!-- Card Pembungkus Form -->
             <div class="card border-0 shadow-sm rounded-4 position-relative overflow-hidden">
-                <!-- Aksen Garis Atas (Warna Biru/Primary) -->
+                <!-- Aksen Garis Atas Biru -->
                 <div class="position-absolute top-0 start-0 w-100 bg-primary" style="height: 4px;"></div>
-                
-                <div class="card-body p-4 p-lg-5">
-                    <!-- Pastikan route action-nya mengarah ke proses simpan data baru (misal kategori.store) -->
-                    <form action="{{ route('kategori.store') }}" method="POST">
-                        @csrf
 
+                <div class="card-body p-4 p-lg-5">
+                    <form action="{{ route('kategori.update', ['id_kategori' => $data->id_kategori]) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+
+                        <!-- Nama Kategori -->
                         <div class="mb-4">
-                            <label for="nama_kategori" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
-                                Nama Kategori <span class="text-danger">*</span>
-                            </label>
+                            <label for="nama_kategori" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">Nama Kategori</label>
                             <div class="input-group shadow-sm rounded-3 overflow-hidden">
                                 <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
                                     <i class="bi bi-tag-fill"></i>
                                 </span>
-                                <input type="text" name="nama_kategori" id="nama_kategori" class="form-control form-control-lg border-0 bg-body-tertiary fs-6" value="{{ old('nama_kategori') }}" placeholder="Contoh: Elektronik, Alat Tulis..." required autofocus>
+                                <input type="text" name="nama_kategori" id="nama_kategori" class="form-control form-control-lg border-0 bg-body-tertiary fs-6" value="{{ $data->nama_kategori }}" placeholder="Contoh: Alat Olahraga" required>
                             </div>
                         </div>
-
+                        
+                        <!-- Kode Kategori -->
                         <div class="mb-4">
-                            <label for="kode_kategori" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
-                                Kode Kategori <span class="text-danger">*</span>
-                            </label>
+                            <label for="kode_kategori" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">Kode Kategori</label>
                             <div class="input-group shadow-sm rounded-3 overflow-hidden">
                                 <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
-                                    <i class="bi bi-upc-scan"></i>
+                                    <i class="bi bi-code-square"></i>
                                 </span>
-                                <input type="text" name="kode_kategori" id="kode_kategori" class="form-control form-control-lg border-0 bg-body-tertiary fs-6 font-monospace" value="{{ old('kode_kategori') }}" placeholder="Contoh: KAT-001..." required>
+                                <input type="text" name="kode_kategori" id="kode_kategori" class="form-control form-control-lg border-0 bg-body-tertiary fs-6" value="{{ $data->kode_kategori }}" placeholder="Contoh: OLG" required>
                             </div>
                         </div>
 
-                        <div class="mb-5">
-                            <label for="keterangan" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
-                                Keterangan <span class="text-danger">*</span>
-                            </label>
+                        <!-- Keterangan -->
+                        <div class="mb-4">
+                            <label for="keterangan" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">Keterangan</label>
                             <div class="input-group shadow-sm rounded-3 overflow-hidden">
-                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3 align-items-start pt-3">
+                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
                                     <i class="bi bi-card-text"></i>
                                 </span>
-                                <textarea name="keterangan" id="keterangan" class="form-control border-0 bg-body-tertiary fs-6" rows="3" placeholder="Masukkan detail keterangan kategori..." required>{{ old('keterangan') }}</textarea>
+                                <input type="text" name="keterangan" id="keterangan" class="form-control form-control-lg border-0 bg-body-tertiary fs-6" value="{{ $data->keterangan }}" placeholder="Keterangan singkat kategori..." required>
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-end">
-                            <!-- Tombol diubah jadi Biru (btn-primary text-white) -->
-                            <button type="submit" class="btn btn-primary text-white px-5 py-2.5 rounded-pill fw-bold shadow-sm hover-lift d-inline-flex align-items-center gap-2">
-                                <i class="bi bi-cloud-arrow-up-fill"></i> Simpan Data Kategori
+                        <!-- Tombol Aksi -->
+                        <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                            <a href="{{ route('kategori.index') }}" class="btn btn-outline-secondary rounded-pill px-4 py-2.5 fw-medium">
+                                <i class="bi bi-arrow-left me-1"></i> Kembali
+                            </a>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4 py-2.5 fw-bold shadow-sm hover-lift">
+                                <i class="bi bi-check-lg me-1"></i> Simpan Perubahan
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -101,7 +99,7 @@
         box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
     }
 
-    /* Efek glow kuning diganti menjadi warna glow Biru Bootstrap */
+    /* Efek Glow Biru saat Input diklik/fokus */
     .input-group:focus-within {
         box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
     }

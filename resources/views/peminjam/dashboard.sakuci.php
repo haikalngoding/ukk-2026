@@ -1,10 +1,10 @@
 @extends('layouts.app')
-<hi>pppp</hi>
+
 @section('title', config('app.name') . ' -- Dashboard')
 
 @section('content')
 <div class="container-fluid p-0">
-<hi>pppp</hi>
+
     <!-- 1. WELCOME BANNER UTAMA -->
     <div class="card border-0 shadow-sm rounded-4 mb-4 bg-primary text-white overflow-hidden position-relative">
         <!-- Dekorasi Latar Belakang (Ikon transparan) -->

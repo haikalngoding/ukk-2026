@@ -105,6 +105,8 @@ Route::group(['prefix' => 'petugas', 'middleware' => 'petugas'], function () {
     // Rute Petugas untuk Peminjaman & Persetujuan
     Route::get('/peminjaman', [PeminjamanController::class, 'indexPetugas'])->name('petugas.peminjaman.index');
     Route::post('/peminjaman/{id}/setujui', [PeminjamanController::class, 'setujuiPetugas'])->name('petugas.peminjaman.setujui');
+    Route::get('/pengembalian', [PengembalianController::class, 'indexPetugas'])->name('petugas.pengembalian.index');
+    Route::get('/pengembalian/cetak', [PengembalianController::class, 'cetakPetugas'])->name('petugas.pengembalian.cetak');
 });
 // @role:petugas:end
 
