@@ -130,21 +130,32 @@ class PeminjamanController
         return view('peminjam.create_peminjam', compact('alat'));
     }
 
-    public function storePeminjam(Request $request)
+   public function storePeminjam(Request $request)
     {
         $currentUser = User::current();
-        
-        if (!$currentUser) {
-            return redirect(route('login'))->with('error', 'Silakan login terlebih dahulu.');
-        }
+        if (!$currentUser) return redirect(route('login'))->with('error', 'Silakan login terlebih dahulu.');
 
         $data = $request->all();
+        $jumlah_pinjam = $data['jumlah'] ?? 1; // Ambil jumlah pinjam, default 1
+
+        // KODE BARU: Validasi ketersediaan stok
+        $alat = Alat::where('id_alat', $data['id_alat'])->first();
         
-        // Memastikan id_user dikunci menggunakan data session login (mencegah manipulasi input)
+        // Tolak jika alat tidak ditemukan atau stoknya kurang dari jumlah yang dipinjam
+        if (!$alat || $alat->stok < $jumlah_pinjam) {
+            return redirect(route('peminjam.createPeminjam'))->with('error', 'Maaf, pengajuan gagal. Stok ' . ($alat->nama_alat ?? 'alat') . ' habis atau tidak mencukupi.');
+        }
+
+        // Jika stok aman, baru lanjutkan proses simpan data peminjaman
         $data['id_user'] = $currentUser->id;
         $data['status'] = 'Pending';
 
         Peminjaman::create($data);
+
+        // Lanjutkan dengan kode update pengurangan stok yang sudah dibuat sebelumnya...
+        $alat->update([
+            'stok' => $alat->stok - $jumlah_pinjam
+        ]); 
 
         // Pencatatan Log Aktivitas Siswa
         LogAktifitas::create([
@@ -211,9 +222,9 @@ class PeminjamanController
     // CETAK LAPORAN PEMINJAMAN
     // ==========================================
     public function cetaklaporan(Request $request)
-{
+    {
     $datap = Peminjaman::orderBy('id_peminjaman', 'desc')->get();
     // Jika memanggil 'peminjaman.laporan', maka file fisik harus ada
     return view('peminjaman.laporan', compact('datap'));
-}
+    }
 }

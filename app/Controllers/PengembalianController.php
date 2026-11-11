@@ -196,6 +196,17 @@ class PengembalianController extends Controller
         $peminjaman = Peminjaman::findOrFail($validatedData['id_peminjaman']);
         $peminjaman->update(['status' => 'Dikembalikan']);
 
+        $alat = Alat::where('id_alat', $peminjaman->id_alat)->first();
+        
+        // Ambil data jumlah dari tabel peminjaman, jika tidak ada kolom jumlah anggap 1
+        $jumlah_kembali = $peminjaman->jumlah ?? 1;
+
+        if ($alat) {
+            $alat->update([
+                'stok' => $alat->stok + $jumlah_kembali
+            ]);
+        }
+
         LogAktifitas::create([
             'id_user'   => $currentUser->id,
             'aktifitas' => 'Peminjam ' . ($currentUser->username ?? 'Siswa') . ' mengajukan pengembalian alat.'

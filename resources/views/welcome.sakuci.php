@@ -161,9 +161,32 @@
                 <h4 class="fw-bold text-body mb-1">Selamat Datang Kembali!</h4>
                 <p class="text-body-secondary mb-4">{{ $currentUser->name ?? $currentUser->username ?? 'Pengguna' }}</p>
                 
+                @php
+                // Mengambil data user yang sedang login
+                $currentUser = \App\Models\User::current();
+                // Menyesuaikan dengan nama kolom role di database kamu (role atau level)
+                $role = $currentUser->role ?? $currentUser->level ?? '';
+                @endphp
+
+                @if($role == 'admin')
                 <a href="{{ route('admin.dashboard') }}" class="btn btn-primary btn-lg px-5 py-3 fw-semibold rounded-pill shadow w-100 mb-2">
+                    <i class="bi bi-speedometer2 me-2"></i> Buka Dashboard Admin
+                </a>
+                @elseif($role == 'petugas')
+                <!-- Pastikan nama route ini sesuai dengan yang ada di web.php kamu -->
+                <a href="{{ route('petugas.dashboard') }}" class="btn btn-primary btn-lg px-5 py-3 fw-semibold rounded-pill shadow w-100 mb-2">
+                    <i class="bi bi-speedometer2 me-2"></i> Buka Dashboard Petugas
+                </a>
+                @elseif($role == 'peminjam' || $role == 'siswa')
+                <!-- Pastikan nama route ini sesuai dengan yang ada di web.php kamu -->
+                <a href="{{ route('peminjam.dashboard') }}" class="btn btn-primary btn-lg px-5 py-3 fw-semibold rounded-pill shadow w-100 mb-2">
+                    <i class="bi bi-speedometer2 me-2"></i> Buka Dashboard Siswa
+                </a>
+                @else
+                <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-5 py-3 fw-semibold rounded-pill shadow w-100 mb-2">
                     <i class="bi bi-speedometer2 me-2"></i> Buka Dashboard
                 </a>
+                @endif
             </div>
         </div>
     @endif

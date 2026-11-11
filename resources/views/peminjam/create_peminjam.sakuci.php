@@ -54,17 +54,14 @@
                                 <input type="hidden" name="id_alat" value="{{ $selectedAlatId }}">
                             @else
                                 {{-- Jika dibuka manual dari sidebar: Tampilkan dropdown pilihan --}}
-                                <select name="id_alat" id="id_alat" class="form-select" required>
+                                <select name="id_alat" class="form-control" required>
                                     <option value="">-- Pilih Alat Inventaris --</option>
-                                    @foreach($daftarAlat as $item)
-                                        @php 
-                                            $aId = $item->id_alat ?? $item->id;
-                                            $aName = $item->nama_alat ?? $item->nama ?? 'Alat #' . $aId;
-                                        @endphp
-                                        <option value="{{ $aId }}">
-                                            {{ $aName }} @if(isset($item->stok)) (Stok: {{ $item->stok }}) @endif
-                                        </option>
-                                    @endforeach
+                                         @foreach($alat as $item)
+                                            <!-- Jika stok 0 atau kurang, tambahkan atribut 'disabled' -->
+                                    <option value="{{ $item->id_alat }}" {{ $item->stok <= 0 ? 'disabled' : '' }}>
+                                        {{ $item->nama_alat }} (Stok: {{ $item->stok }})
+                                    </option>
+                                         @endforeach
                                 </select>
                             @endif
                         </div>

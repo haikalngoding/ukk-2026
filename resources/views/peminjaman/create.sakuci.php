@@ -66,10 +66,11 @@
                                 <select name="id_alat" id="id_alat" class="form-select form-select-lg border-0 bg-body-tertiary fs-6" required>
                                     <option value="">-- Pilih Alat Inventaris --</option>
                                     @foreach($alat as $item)
-                                        <option value="{{ $item->id }}" {{ old('id_alat') == $item->id ? 'selected' : '' }}>
-                                            {{ $item->nama_alat ?? $item->nama ?? 'Alat ID: ' . $item->id }}
-                                        </option>
-                                    @endforeach
+                                            <!-- Jika stok 0 atau kurang, tambahkan atribut 'disabled' -->
+                                    <option value="{{ $item->id_alat }}" {{ $item->stok <= 0 ? 'disabled' : '' }}>
+                                        {{ $item->nama_alat }} (Stok: {{ $item->stok }})
+                                    </option>
+                                         @endforeach
                                 </select>
                             </div>
                         </div>
@@ -124,27 +125,13 @@
                                     <i class="bi bi-info-circle"></i>
                                 </span>
                                 <select name="status" id="status" class="form-select form-select-lg border-0 bg-body-tertiary fs-6" required>
-                                    <option value="Pending" {{ old('status', 'Pending') == 'Pending' ? 'selected' : '' }}>Pending</option>
                                     <option value="Disetujui" {{ old('status') == 'Disetujui' ? 'selected' : '' }}>Disetujui</option>
-                                    <option value="Ditolak" {{ old('status') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
-                                    <option value="Dipinjam" {{ old('status') == 'Dipinjam' ? 'selected' : '' }}>Dipinjam</option>
-                                    <option value="Dikembalikan" {{ old('status') == 'Dikembalikan' ? 'selected' : '' }}>Dikembalikan</option>
                                 </select>
                             </div>
                         </div>
 
                         <!-- Denda -->
-                        <div class="mb-5">
-                            <label for="denda" class="form-label fw-medium text-body-secondary small text-uppercase tracking-wider">
-                                Denda (Rp)
-                            </label>
-                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
-                                <span class="input-group-text bg-body-tertiary border-0 text-secondary px-3">
-                                    <i class="bi bi-cash-coin"></i>
-                                </span>
-                                <input type="number" name="denda" id="denda" class="form-control form-control-lg border-0 bg-body-tertiary fs-6" value="{{ old('denda', 0) }}" min="0" placeholder="0">
-                            </div>
-                        </div>
+                        
 
                         <div class="d-flex justify-content-end">
                             <button type="submit" class="btn btn-primary text-white px-5 py-2.5 rounded-pill fw-bold shadow-sm hover-lift d-inline-flex align-items-center gap-2">
