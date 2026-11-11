@@ -27,8 +27,12 @@
                     <div class="alert bg-info-subtle border-0 text-info-emphasis rounded-3 d-flex align-items-center gap-3 p-3 mb-4 fs-7 shadow-2xs">
                         <i class="bi bi-info-circle-fill fs-5 text-info"></i>
                         <div>
-                            <strong>Akun Demo:</strong> <br>
+                            <strong>Akun Demo: Admin</strong> <br>
                             Username: <code>admin</code> &mdash; Password: <code>rahasia123</code>
+                            <strong>Akun Demo: Peminjam</strong> <br>
+                            Username: <code>siswa</code> &mdash; Password: <code>12345678</code>
+                            <strong>Akun Demo: Petugas</strong> <br>
+                            Username: <code>haikal</code> &mdash; Password: <code>12345678</code>
                         </div>
                     </div>
 
